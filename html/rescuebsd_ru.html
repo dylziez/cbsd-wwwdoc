@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <META http-equiv="content-type" content="text/html; charset=UTF-8">
+  <META name="Description" content="CBSD Store">
+  <META name="Keywords" content="CBSD, BSDStore">
+
+  <LINK rel="shortcut icon" href="favicon.ico">
+
+  <title>CBSD - FreeBSD jails management tools</title>
+<meta name="keywords" content="freebsd rescue, freebsd livecd, rescuecbsd livecd, freebsd intel hd, freebsd intel video" /><meta name="description" content="freebsd rescue, freebsd livecd, rescuebsd livecd" />
+
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">Rescuebsd LiveCD</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<b>rescuebsd</b> и <b>xrescuebsd</b> - это клетки для <b>cbsd</b> (консольная и с X сервером соответственно), содержащие популярный набор ПО для настройки
+и восстановления систем, утилиты для анализа сети и тестирования аппаратного обеспечения, которые могут быть полезны в качестве дистрибутивов при 
+восстановительных работах. Работа над разработкой LiveCD дистрибутива в мои планы не входит, нижедоступные образы являются по большей части побочным 
+эффектом от <b>jail2iso</b> и демонстрацией ее работы.
+<br><br>
+Данные клетки могут быть получены через <b>cbsd repo</b>,  кастомизированы, и использованы в качестве PXE -клеток для бездисковой загрузки по сети,
+либо посредством <b>cbsd jail2iso</b> получены USB Memstick и DVD/CD образы.
+<br><br>
+Список ПО, входящего в оригинальные клетки: <a href="http://dl.bsdstore.ru/img_amd64_9.1_rescuebsd/pkg_info.html">rescuebsd</a>, <a href="http://dl.bsdstore.ru/img_amd64_9.1_xrescuebsd/pkg_info.html">xrescuebsd</a>
+<br><br>Все .img (USB Memstick образы) могут быть записаны на USB носитель через команду:
+<pre>
+dd if=_path_to_img.img_ of=/dev/da0 bs="10240" conv="sync"
+</pre>
+Будьте внимательны, прописывая корректное имя устройства в <i>of=</i> аргументе.
+<br><br>
+<table border=1>
+<tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD CURRENT aka 10.0</b></td></tr>
+<tr>
+    <td>no GUI</td>
+    <td>ISO</td>
+    <td><a href="http://dl.bsdstore.ru/freebsd/amd64/10.0/live-rescue/rescuebsd-10.0_amd64.iso">FreeBSD x86-64</td>
+</tr>
+<tr>
+    <td>no GUI</td>
+    <td>Memstick</td>
+    <td><a href="http://dl.bsdstore.ru/freebsd/amd64/10.0/live-rescue/rescuebsd-10.0_amd64.img">FreeBSD x86-64</td>
+</tr>
+
+<tr>
+    <td>FreeBSD X11 with Intel graphics</td>
+    <td>ISO</td>
+    <td><a href="http://dl.bsdstore.ru/freebsd/amd64/10.0/live-xrescuekms/xrescuebsdkms-10.0_amd64.iso">FreeBSD x86-64</td>
+</tr>
+<tr>
+    <td>FreeBSD X11 with Intel graphics</td>
+    <td>Memstick</td>
+    <td><a href="http://dl.bsdstore.ru/freebsd/amd64/10.0/live-xrescuekms/xrescuebsdkms-10.0_amd64.img">FreeBSD x86-64</td>
+</tr>
+</table>
+<br>
+xrescuebsd livecd screenshot:<br><br>
+<img src="/html/img/xrescuebsd1.png"></img>
+<br>
+</BODY>
+</HTML>

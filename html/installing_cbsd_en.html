@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<body>
+<!--# include file="/html/translate_en.html" -->
+<center><FONT face="verdana,arial,helvetica" size="+1">Installing cbsd</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<h3><ins>Requirements</ins><a href="#Requirements"></a></h3>
+Since <b>cbsd</b> - it's only a number of simplifying the work with the jails scripts, fits any hardware on which the start FreeBSD.
+It is assumed that cbsd is installed on a clean, freshly installed FreeBSD, because the setting is a number of configuration
+files <a href="custom_freecbsd_en.html">was changed</a>.
+For full work is desirable:<br><br>
+<li> FreeBSD version greater r equal of 9.1-RELEASE.
+<li> <b>amd64</b> architecture, because the development is carried out under it.
+<li> ZFS file system, because the use of a number of possibilities offered by ZFS.
+<li> kernel with RACCT/RCTL and VIMAGE support (<b>cbsd</b> can fetch out a kernel from own repository with your consent)
+<br>
+<h3><ins>cbsd versioning</ins><a href="#cbsd-versioning"></a></h3>
+The first two digits of the cbsd version related to FreeBSD versions for which it was developed and tested.
+Version 9.1.0 means that scripts were written for FreeBSD 9.1. The third number figure means the cbsd version.
+
+<h3><ins>Installation and preparation cbsd</ins><a href="#cbsd-preparing"></a></h3>
+
+1)<br>
+<p>a) cbsd can be install via FreeBSD ports tree:</p>
+<b>
+<pre>
+    % make -C /usr/ports/sysutils/cbsd install
+</pre>
+</b>
+or <br>
+<p>b) after installing the required dependencies: <b>libssh2, sudo, rsync, sqlite3</b></p>
+<b>
+<pre>
+    % make -C /usr/ports/security/sudo install
+    % make -C /usr/ports/security/libssh2 install
+    % make -C /usr/ports/net/rsync install
+    % make -C /usr/ports/databases/sqlite3 install
+    % make -C /usr/ports/devel/git install
+</pre>
+</b>
+get the latest version of cbsd from github:
+<pre>
+% git clone https://github.com/olevole/cbsd.git /usr/local/cbsd
+</pre>
+2)<br>
+<p>In classical installation, cbsd contains in two copies. One of them (<i>/usr/local/cbsd</i>), contains a distribution kit, an initial code and configuration files by default. 
+Also, this copy can be used for management of jails in case the main copy is damaged (for example was incorrectly updated). 
+The index of with what catalog of scripts to work is the environment variable <i>workdir</i>.</p>
+<p>For initialization of a working (main) copy of cbsd, use <strong>initenv</strong> command, with which start in the first call it is necessary to specify through an environment variable
+ <i>workdir</i> the place of the working catalog and also to answer a number of questions. </p>
+3) Initialization with the working catalog into <i>/usr/jails</i>:</p>
+<b>
+<pre>
+% env workdir="/usr/jails" /usr/local/cbsd/sudoexec/initenv
+</pre>
+</b>
+At the first start dialogue a question-answer on the main settings of a node will proceed.  The expected user input system writes 
+as an example (e.g.). By pressing Enter with not filled value system will be used value from example.
+After each updating cbsd, initenv it is necessary to cause again.
+The next times of initenv can be started through cbsd without <b>env</b>(settings of the working dir will be stored in <b>/etc/rc.conf</b>).
+<p>At the first initialization the following questions can meet:</p>
+<li><strong>Please fill nodename</strong> - Node name. If there will be a work with several nodes, this name should be unique.
+It is recommended to use a name, similar full hostname (including domain). This name is used at work with data of servers with remote hosts. Example: node1.my.domain.
+<li><strong>Please fill nodeip</strong> - Working and static IP address of a node. It shouldn't be alias and it is desirable to register this IP on the separately interface
+(free from any other except a management-traffic). For example: 192.168.1.2
+<li><strong>Please fill nodeloc</strong> - Information strings. It will be used in the future in the WEB interface. Here it is possible to leave information on a geographical place of this nodes. For example: USA, Dallas DC.
+<li><strong>Please fill jnameserver</strong> - The DNS list the server, established in <i>/etc/resolv.conf</i> for created jails. If them a more than one - a comma separated.
+It is recommended to enable on master-node local named for a caching of requests. In order that jails could use it, it is necessary in <i>/etc/namedb/named.conf</i> replace string
+<pre>
+listen-on       { 127.0.0.1; };
+</pre>
+to
+<pre>
+listen-on       { any; };
+</pre>
+and, if the IP address of a node 192.168.1.2 to specify in this field: 192.168.1.2,8.8.8.8 (having registered primary DNS - local, the second - public DNS from Google).
+For automatic start of named, in <i>/etc/rc.conf</i> you must have:
+<pre>
+named_enable="YES"
+</pre>
+then execute: 
+<pre>service named start
+</pre>
+ <b>
+<pre>
+service named start
+</pre>
+</b>
+<li><strong>Please fill nodeippool</strong> - The list of subnets in which it is permitted to be started the jails. If networks more then one - use spacel as delimer. For example: 10.0.0.0/24 192.168.1.128/29
+<li><strong>Please fill natip</strong> - Here it is necessary to enter the IP address which will represent itself as NAT for private addresses. Usually it is IP of your node. For example: 192.168.1.2
+<li><strong>Please fill fbsdrepo</strong> - Whether to use an official repository of FreeBSD for base/templates. The answer 1 or 2 is expected. If on officidal FreeBSD servers  base it is not revealed - cbsd repository is used. 
+For example: 1.
+<li><strong>Please fill zfsfeat</strong> - Whether to use possibilities of file system ZFS (clones, snapshots). The answer 1 or 2 is expected. The question won't be, if the system is started not on ZFS.
+<li><strong>Please fill mdtmp</strong> - Whether to create memory-disk through which the system will perform temporary operations over files (lock-files, temporary copy of config files). By default, the disk equals 8MB.
+<li><strong>Configure NAT for RFC1918 Network?</strong> - Whether to use network address translation (NAT) for private addresses? When jails are created in RFC1918 networks, it is necessary to enable for internet access. For example: 1.
+<li><strong>Which one NAT framework should be use: [pf or ipfw]</strong>- What tool for NAT to prefer. Recommended - pf. For example: 1
+<br><br>
+<b>Warning:</b> all settings stored in the file <b>$workdir/nc.inventory</b> also can be changed in any favorite editor.
+If you want to initiate a dialogue with the initial configuration again, simply delete this file.
+<br>
+<p style="color:RED">Attention! During the first installation, the system create user named <b>cbsd</b> with access to the shell through which cbsd's remote nodes will communicate via ssh. 
+Please take the choice of complex password with the maximum attention. After first <b>cbsd initenv</b> the password can be changed via the standard command <b> passwd cbsd</b></p>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd repo
+</pre>
+<pre>
+% cbsd repo-tui
+</pre>
+
+<b>Ddescription</b>:
+<br><br>
+Work with a repository of bases, kernels and images. The quantity a repository can be more than one and they are specified through a gap 
+in the file repo variable <b>$workdir/nc.inventory</b>. Downloading will occur from the first repository where the object will find. Respectively,
+if the local repository is used - it should be the first.
+<br><br>
+obligatory parameters:
+<br><br>
+<b>action</b> - can accept value <i>list</i> (get list), <i>get</i> (download), <i>put</i> (upload)
+<br><br>
+Arguments which in certain cases aren't obligatory:
+<br><br>
+<b>sources</b> - sources for <b>action</b> - with what data we want to work. Can accept values:<br>
+<br><i>src</i> - source code for OS (${workdir}/src)
+<br><i>obj</i> - object file for source code ($workdir}/obj)
+<br><i>base</i> - world/bases ($workdir/base)
+<br><i>kernel</i> - kernels of OS (${workdir}/base)
+<br><i>img</i> - jails
+<br><br>
+<b>name</b> - name (used with sources=obj,base,kernel,img - name of base/world or jails)
+<br>
+<b>stable</b> - related to sources=obj,base - get RELENG_X instead of RELENG_X_Y
+<br>
+<b>ver</b> - By default, for obtaining the list or downloading the current version of OS will be used. With the ver=X.Y parameter it is possible to specify 
+other version for jail/base/kernel. At ver=any for action=list, will be it is deduced all available data of sources for all versions
+<br>
+<br><br>
+<b>Example</b>:
+<br>Obtaining the list of available jails for 9.1 versions
+<pre>
+% cbsd repo action=list sources=img ver=9.1
+</pre>
+to get and import kfreebsd jail:
+<pre>
+% cbsd repo action=get sources=img name=kfreebsd
+</pre>
+<center>
+<img src="/html/img/repo1.png"></img>
+<br><br>
+<br>Upon termination of an import the question of correct IP for a new jails will be asked and whether to create alias
+automatically. We choose COMMIT for preservation.
+<br><br>
+<img src="/html/img/repo2.png"></img>
+<br><br>
+<br>Now jail in system also it is possible to use<br>
+<br>
+<img src="/html/img/repo3.png"></img>
+<br><br>
+</center>
+</p>

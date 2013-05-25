@@ -1,0 +1,70 @@
+<b>Command</b>:<br>
+<pre>
+% cbsd jail2iso
+</pre>
+<b>Description</b>:
+<br><br>
+The <b>jail2iso</b> script allows to create a bootable image for CD/DVD/Memstick from the specified jail. This script can be applied to creation of custom LiveCD.
+<br><br>
+Script job:
+<br><br>
+<li> Creation of file hierarchy of next image consisting of mounted base and data of a jail
+<li> Creation of MFS/UZIP of an image which will remain in memory. It is used generally for work acceleration in the LiveCD mode, allowing for "cache" often caused utilities and libraries, for example
+from / to / usr.
+<li> Mount over MFS of hierarchy of data from file system of the media through nullfs/RO
+<li> Mount through tmpfs over RO file system for modification in LiveCD mode.
+<br>
+<br>
+Listing of directory which are necessary for rewriting on RW/tmpfs it is necessary before call <b>jail2iso</b>, stored into file <i>$systemdir/jail/tmpfsdir</i>
+<br>For example, for <b>mc</b> jail it is: <i>/usr/jails/jails-system/mc/tmpfsdir</i> file with, for example, follow content:
+<br>
+<pre>
+/etc
+/root
+/var/cache
+/var/tmp
+/var/run
+/var/log
+/var/db
+/tmp
+/usr/home
+/root
+/usr/local/etc
+</pre>
+<br>
+This record will be kept in <i>/etc/rc.d/tmpfsdir</i> in image, which mount these directory through tmpfs also will write down in them contents of original content from bootable media.
+<br>As RW areas are mounted through TMPFS, the quantity of memory available to record will depend on quantity of RAM of servers on which LiveCD is started.
+<br><br>
+<b>Example</b> (fetching from repository Midnight Commander jail and turn it to /tmp/mc.iso):
+<br>
+<pre>
+% cbsd repo action=get sources=img name=mc
+% cat > /usr/jails/jails-system/mc/tmpfsdir << EOF
+/etc
+/root
+/var/cache
+/var/tmp
+/var/run
+/var/log
+/var/db
+/tmp
+/usr/home
+/root
+/usr/local/etc
+EOF
+
+% cbsd jail2iso media=iso jname=mc destdir=/tmp
+% file -s /tmp/mc.iso
+</pre>
+If /tmp/mc.iso is present, it can be burned on CD/DVD. For USB Memstick:
+<br>
+<pre>
+% cbsd jail2iso media=memstick jname=mc destdir=/tmp
+% file -s /tmp/mc.img
+</pre>
+If /tmp/mc.img is present, it can be written on USB Storage via:
+<pre>
+dd if=/tmp/mc.img of=/dev/da0 bs="10240" conv="sync"
+</pre>
+command, if <b>/dev/da0</b> - it correct USB Flash device.
+<br><br><center>

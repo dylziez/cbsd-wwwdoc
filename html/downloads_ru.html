@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <META http-equiv="content-type" content="text/html; charset=UTF-8">
+  <META name="Description" content="CBSD Store">
+  <META name="Keywords" content="CBSD, BSDStore">
+
+  <LINK rel="shortcut icon" href="favicon.ico">
+  <title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">Скачать</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<hr><br>
+<br>Все .img (USB Memstick образы) могут быть записаны на USB носитель через команду:
+<pre>
+dd if=_path_to_img.img_ of=/dev/da0 bs="10240" conv="sync"
+</pre>
+Будьте внимательны, прописывая корректное имя устройства в <i>of=</i> аргументе.
+<br>
+<br> В данный момент, генерация <b>cbsd</b> образов отключена. Для установки из исходников воспользуйтесь <a href="installing_cbsd.html">этой инструкцией</a>
+<br> Если же все равно что-то непременно хотите скачать ;-), скачайте FreeBSD LiveCD из rescue jail: <a href="rescuebsd_ru.html">Rescuecbsd LiveCD</a>
+<br><br>
+<FONT face="verdana,arial,helvetica" size="-1"><b>pkg</b> репозитории из которых собраны клетки (для <b>/usr/local/etc/pkg.conf</b>):</font>
+<br><br>
+<table>
+<tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD 9.1</b></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.1/xorg</td><td><i> # (обычная версия, NVIDIA GL)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.1/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.1/nox11</td><td><i> # (WITHOUT_X11=yes)</i></br></tr>
+<tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD CURRENT aka 10.0</b></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/xorg</td><td><i> # (обычная версия, NVIDIA GL)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/nox11</td><td><i> # (WITHOUT_X11=yes)</i></br></tr>
+</table>
+<br><i>Прим1</i>: в данный момент сборка выполняется только для x86-64 архитектуры пр причине отсутствия в моей ферме иных.
+<br><i>Прим2</i>: данные имиджи и репозитории подняты и поддерживаются больше в целях демонстрации и проверок функционала cbsd, нежели для
+обеспечения чьей-то работы. В целях безопасности, приучайте себя не доверять любым репозиторям ПО в интернете,
+используйте только официальные и хорошо проверенные репозитории либо собирайте собственные.
+<br><br>
+<FONT face="verdana,arial,helvetica" size="-1">имиджи, доступные для скачивания через команду <b>cbsd repo action=get sources=img name=<i>name</i></b>:</font>
+<br><br>
+<!--# include file="/html/images.html" -->
+<br>
+</font><blockquote>
+</BODY>
+</HTML>
+

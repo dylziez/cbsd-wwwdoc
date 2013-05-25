@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<body>
+<center><FONT face="verdana,arial,helvetica" size="+1">Синтаксис команд cbsd</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<p>Все команды начинаются с префикса cbsd:
+<b>
+<pre>
+% cbsd jls
+% cbsd jstop jname
+% cbsd jstart jname
+% cbsd node mode=list
+...
+</pre></b>
+<p>Команды cbsd могут принимать аргументы, записываемые в виде "param=value" <br />cbsd команды могут иметь как обязательные аргументы, так и аргументы, которые можно опустить.
+Получить список аргументов можно по команде</p>
+<b>
+<pre>
+% cbsd &lt;cmd&gt; --help
+</pre>
+</b>
+- с выводом и кратким описанием, какие команды обязательны, а какие опциональны.
+<p>либо</p>
+<b>
+<pre>
+% cbsd &lt;cmd&gt; --args
+</pre>
+</b>
+для вывода всех ожидаемых аргументов у команды cmd. 
+<br><br>
+<b>Пример</b>:
+<br><br>
+Команда 
+<pre>
+% cbsd --help
+</pre>
+выведет список всех возможных команд cbsd. 
+<br><br>Команда
+<pre>
+% cbsd jsnapshot --help
+</pre>
+выведет все возможные параметры для команды <b>jsnapshot</b>
+</body>
+</html>

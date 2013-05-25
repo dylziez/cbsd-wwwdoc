@@ -1,0 +1,20 @@
+<b>Команды</b>:<br>
+<pre>
+% cbsd node mode=list
+</pre>
+
+Команда <b>cbsd node mode=list</b> выведет имена тех нод, RSA ключи которых были получены через 
+<b>cbsd node add</b>. Тоже самое можно получить, просмотрев каталог <b>$workdir/.rssh</b>, в котором
+находятся ключи. Выведенный список не означает, что имеющийся ключ актуален или связь с нодой
+имеется (для этих задач есть специальный демон <b>nodepinger</b>)
+<br>
+<br><br>
+<b>Пример:</b>
+<pre>
+% cbsd node mode=list
+</pre>
+<br><center>
+<img src="/html/img/nodelist1.png"></img>
+<br><br>
+</center>
+</p>

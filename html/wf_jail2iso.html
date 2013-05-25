@@ -1,0 +1,72 @@
+<b>Команды</b>:<br>
+<pre>
+% cbsd jail2iso
+</pre>
+<b>Описание</b>:
+<br><br>
+Скрипт <b>jail2iso</b> позволяет создать загрузочный образ для CD/DVD/Memstick из указанной клетки.
+Данный скрипт можно применять для построения кастомизированных LiveCD.
+<br><br>
+Схема работы скрипта:
+<br><br>
+<li> Создание файловой иерархии будущего образа, состоящей из подмонтированной базы и данных клетки
+<li> Создание MFS/UZIP образа, который будет оставаться в памяти. Используется в основном для ускорения работы в режиме LiveCD, позволяя "закешировать" часто вызывающиеся утилиты и библиотеки, например
+от / до /usr.
+<li> Монтирование поверх MFS иерархии данных с файловой системы носителя через nullfs/RO
+<li> Монтирование tmpfs поверх RO файловой системы для возможности производить модификации.
+<br>
+<br>
+Перечислить список каталогов, которые необходимо перезаписать на RW/tmpfs необходимо до вызова утилиты <b>jail2iso</b>, сохравнив в файл <i>$systemdir/jail/tmpfsdir</i>
+<br>Например для клетки <b>mc</b> это файл: <i>/usr/jails/jails-system/mc/tmpfsdir</i> содержащий, например:
+<br>
+<pre>
+/etc
+/root
+/var/cache
+/var/tmp
+/var/run
+/var/log
+/var/db
+/tmp
+/usr/home
+/root
+/usr/local/etc
+</pre>
+<br>
+Данная запись будет сохранена в <i>/etc/rc.d/tmpfsdir</i> образа, который подмонтирует данные каталоги через tmpfs и запишет в них содержимое оригинальных каталогов с bootable media.
+<br>Поскольку RW области монтируются через TMPFS, количество доступной для записи памяти будет зависеть от количества оперативной памяти, на котором запускается LiveCD.
+<br><br>
+<b>Пример</b> (получаем из репозитория клетку mc, превращаем ее в LiveCD образ в каталоге /tmp:)
+<br>
+<pre>
+% cbsd repo action=get sources=img name=mc
+% cat > /usr/jails/jails-system/mc/tmpfsdir << EOF
+/etc
+/root
+/var/cache
+/var/tmp
+/var/run
+/var/log
+/var/db
+/tmp
+/usr/home
+/root
+/usr/local/etc
+EOF
+
+% cbsd jail2iso media=iso jname=mc destdir=/tmp
+% file -s /tmp/mc.iso
+</pre>
+Если /tmp/mc.iso записался, его можно прожечь на CD/DVD. Для получения USB Memstick:
+<br>
+<pre>
+% cbsd jail2iso media=memstick jname=mc destdir=/tmp
+% file -s /tmp/mc.img
+</pre>
+
+Если /tmp/mc.img есть, его можно записать на USB носитель через команду:
+<pre>
+dd if=/tmp/mc.img of=/dev/da0 bs="10240" conv="sync"
+</pre>
+, если <b>/dev/da0</b> - это USB flash носитель.
+<br><br><center>

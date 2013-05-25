@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<body>
+<center><FONT face="verdana,arial,helvetica" size="+1">Иерархия каталогов cbsd</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+
+<h3><ins>Иерархия каталогов cbsd</ins><a href="#Иерархия-cbsd"></a></h3>
+Все данные cbsd (включая клетки) находятся в каталоге, указанной в переменной workdir при установке. В нашем случае это /usr/jails. Описание некоторых каталогов в /usr/jails:<br>
+<br>
+<table border=1>
+
+<tr><td>/usr/jails/.rssh/</td><td>Каталог для хранения приватных ключей удаленных нод и конфигураций для установки соединения с этими нодами. 
+Файлы в данном каталоге наполняются при команде cbsd node mode=add (см. ниже)</td></tr>
+
+<tr><td>/usr/jails/.ssh</td><td>Здесь хранится приватный и публичный ключ непосредственно данной ноды. Формируется на этапе инициализации при команде cbsd initenv. 
+Именно отсюда будут забирать публичный ключ удаленные хосты по команде cbsd node mode=add. Имя, заданное на этапе initenv в вопросе nodename должен совпадать с написанием 
+имени в аргументе node= при команде cbsd node mode=add. Имя файла ключа является md5 суммой от этого имени.</td></tr>
+
+<tr><td>basejail</td><td>Здесь хранятся готовые к использованию объектные файлы или базы (результат cbsd buildworld, cbsd installworld или cbsd repo action=get sources=obj, cbsd repo action=get sources=base)
+и ядра FreeBSD (результат команд cbsd buildkernel, cbsd installkernel или cbsd repo action=get sources=kernel</td></tr>
+
+<tr><td>etc</td><td>Конфигурационные файлы, необходимые для работы cbsd</td></tr>
+
+<tr><td>export</td><td>Каталог по-умолчанию, в который будет сохраняться экспортированная в файл клетка (при команде cbsd jexport jname=www, в этом каталоге появится файл www.img)</td></tr>
+
+<tr><td>import</td><td>Каталог по-умолчанию, из которого будет импортирован jail (при cbsd jimport jname=img, будет развернута клета www)</td></tr>
+
+<tr><td>jails</td><td>В данном катале находятся точки монтирования и корни для jail-ов, использующих ReadOnly базу (результат mount_nullfs из базы + mount_nullfs из данных клеток)</td></tr>
+
+<tr><td>jails-data</td><td>В этом каталоге лежат все данные клетки. Именно этим местам необходим бекап для сохранности данных. 
+Также, если клетка не использует базу, эти каталоги являются стартовыми для клеток (не используют nullfs)</td></tr>
+
+<tr><td>jails-fstab</td><td>fstab файл для клеток. Синтаксис обычный для FreeBSD за тем лишь исключением, что путь к точке монтирования пишется относительно корня jail 
+(запись <b>/usr/ports /usr/ports nullfs rw 0 0</b> в файле fstab.www означает, что из мастер-ноды каталог /usr/ports будет примонтирован при запуске в /usr/jails/jails-data/www/usr/ports)</td></tr>
+
+<tr><td>jails-rcconf</td><td>rc.conf часть для клеток. Данные параметры можно менять в удобном для вас редакторе, либо через команды 
+cbsd jset jname param=val (например cbsd jset jname=www ip="192.168.0.2/24"). <br><b>Внимание:</b> установленная запись jail_jailname_interface="iface" означает, что при старте, 
+cbsd сама пропишет alias на интерфейсе и также сама его уберет, при останове. Поэтому, будьте осторожны при установке этого параметра и IP в jail_jailname_ip, 
+который равен рабочему IP ноды - при остановке вы потеряете из доступности сервер. В том случае, если jail_jailname_interface отсутствует, cbsd не будет сама 
+устанавливать и снимать ip (он должен уже быть в момент запуска клетки). Менять эти параметры следует при выключенной клетке. </td></tr>
+
+<tr><td>jails-system</td><td>Этот каталог может содержать какие-то вспомогательные скрипты, относящиеся к клетке (например скрипты-wizard-ы для настройки, 
+конфигураторы и пр) а также, сохраняется трафик клетки, если используется ipfw. Данный каталог учавствует при import/export операциях и мигрировании клеток</td></tr>
+</table>
+
+</body>
+</html>

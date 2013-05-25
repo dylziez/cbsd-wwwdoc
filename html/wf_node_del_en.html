@@ -1,0 +1,13 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd node mode=remove
+</pre>
+
+the commands <b>cbsd node mode=remove node=nodename</b> delete private key and records for this node from the 
+<b>$workdir/.rssh</b> directory
+The name specified in node= should coincide with that writing which is output on <b>cbsd node mode=list</b>
+<br>
+<br>Example:
+<pre>
+% cbsd node mode=remove mode=backup1.mydomain.ru
+</pre>

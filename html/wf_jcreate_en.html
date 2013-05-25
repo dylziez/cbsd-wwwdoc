@@ -1,0 +1,67 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jconstruct-tui
+</pre>
+<pre>
+% cbsd jconstruct
+</pre>
+<pre>
+% cbsd jcreate jconf=/path/to/conf.jconf
+</pre>
+<b>Description</b>:
+<br><br>
+The jail is created according to configuration file created by <b>cbsd jcreate jconf=path_to_cfg</b>.
+For create configuration, use a command <b>cbsd jconstruct</b> (question-answer dialog mode),
+or dialog(1)-based interface: <b>cbsd jconstruct-tui</b>, or via WEB interface.
+When <a href="https://wiki.freebsd.org/pkgng"><b>pkg.conf</b></a> and repository configured properly, you can preset to new jail 
+some packages. For safety reason recommendet to use the official FreeBSD <b>pkg</b> repo or 
+<a href="html/doc_en.html">build you own</a> package repository.
+If you wish to use <b>pkg</b> repo, from which the jail of cbsd created, place into your <i>/usr/local/etc/pkg.conf</i> strings:
+<pre>
+      PACKAGESITE:	http://dl.bsdstore.ru/freebsd/amd64/9.1/nox11
+</pre>
+(where 9.1 is your base version) and run: <b>pkg update -f </b> in shell<br><br>
+Please note: when repo unavailable, item <b>pkglist</b> in <i>cbsd jconstruct-tui</i> did not show anything.
+<br>
+Please note: multi-repo and and the ability to choose a specific repository from the list at the moment is missing, 
+and will be used repository prescribed in pkg.conf of master host.
+<br><p>
+for create config via DIALOG:
+<pre>
+% cbsd jconstruct-tui
+</pre>
+
+<p>If <i>jconstruct-tui</i> work correctly, on the exit the question for jail create will be asked. In a case
+positively answer, <b>jcreate</b> it will be executed on a new configuration automatically. Otherwise,
+the script will save configuration file (in $workdir/ftmp), on which it is possible to create a jail by hand.
+<br><br>
+<b>Example</b> (fill for jname, fqdn, ips fields + GO):
+<br>
+<pre>
+% cbsd jconstruct-tui
+</pre>
+<br><br><center>
+<img src="/html/img/jcreate1.png"></img>
+<br><br>
+When repository configured properly, you can preset to new jail some packages.
+Use first character of name port for faster searching and hit space for mark it.
+<br><br><br>
+<img src="/html/img/jcreate6.png"></img>
+<br><br>
+Required fields: a short (one word) the name of the jail. This name is used to identify the jail:
+<br>
+<img src="/html/img/jcreate2.png"></img>
+<br><br>
+Required fields full (the domain) name of the cell. This name will be used as jail hostname:
+<br><br>
+<img src="/html/img/jcreate3.png"></img>
+<br><br>
+Required fields: IP address of jail. May have a network prefix with a record like IP/prefix. To assign more than one IP address, use the editing of the file <b>rc.conf</b> jails described in <a href="/html/wf_jconfig_ssi_en.html">Jail config</a>
+<br><br>
+<img src="/html/img/jcreate4.png"></img>
+<br><br>
+When you choose item <b>GO</b>, you are prompted to create the jail immediately by automatically running <b>cbsd jcreate jconf=..</b>. Otherwise, you will be the path to the saved configuration to run <b>cbsd jcreate</b> by hand:
+<br><br>
+<img src="/html/img/jcreate5.png"></img>
+</center>
+</p>

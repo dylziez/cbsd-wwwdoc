@@ -1,0 +1,66 @@
+<b>Команды</b>:<br>
+<pre>
+% cbsd jsnapshot
+</pre>
+
+<b>Описание</b>:
+<br><br>
+Выводит список, создает, удаляет и откатывает файловые снэпшоты для клетки, если нода запущена на файловой системе ZFS и <b>zfsfeat</b> в файде <b>nc.inventory</b> установлена в 1.
+через параметр <b>mode</b> указывается, что именно необходимо выполнить. Возможные варианты:
+<br><br>
+<b>list</b> - вывести список снапшотов для указанной клетки
+<br>
+<b>create</b> - создать снапшот для указанной клетки
+<br>
+<b>destroy</b> - удалить снапшот для указанной клетки
+<br>
+<b>destroyall</b> - удалить все снапшоты для указанной клетки
+<br>
+<b>clone</b> - клонировать снашпот для указанной клетки
+<br>
+<b>rollback</b> - откатить снапшот для указанной клетки
+<br><br>
+Дополнительные параметры:
+<br><br>
+<b>jname</b> - для какого jail выполняется действие
+<br>
+<b>snapname</b> - указать имя снапшота
+<br>
+<b>snapfs</b> - 
+<br><br>
+<b>Пример</b>:
+<br><br>
+создаем snapshot с именем <i>gromozeka</i> для клетки <b>jail1</b>:
+<br>
+<pre>
+% cbsd jsnapshot mode=create jname=jail1 snapname=gromozeka
+</pre>
+создаем snapshot с именем <i>zelepuka</i> для клетки <b>jail1</b>:
+<pre>
+% cbsd jsnapshot mode=create jname=jail1 snapname=zelepuka
+</pre>
+<br>
+Запустим jail1, выполним какие-либо модификации, остановим:
+<pre>
+% cbsd jstart jail1
+..
+% cbsd jexec jname=jail1 cp /bin/date /root
+% cbsd jexec jname=jail1 file -s /root/date
+/root/date: ELF 64-bit LSB executable, x86-64, version 1 (FreeBSD), dynamically linked (uses shared libs), for FreeBSD 9.0 (900506), stripped
+% cbsd jstop jail1
+..
+</pre>
+Откатим jail1 на состояние, когда был создан снапшот zelepuka:
+<pre>
+% cbsd jsnapshot mode=rollback snapname=zelepuka jname=jail1
+% cbsd jstart jail1
+...
+% cbsd jexec jname=jail1 file -s /root/date
+/root/date: ERROR: cannot open `/root/date' (No such file or directory)
+</pre>
+
+<br><center>
+<img src="/html/img/jsnapshot1.png"></img>
+<br><br>
+</center>
+</p>

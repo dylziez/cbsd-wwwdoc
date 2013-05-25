@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <META http-equiv="content-type" content="text/html; charset=UTF-8">
+  <META name="Description" content="CBSD Store">
+  <META name="Keywords" content="CBSD, BSDStore">
+  <LINK rel="shortcut icon" href="favicon.ico">
+
+  <title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<!--# include file="/html/translate_en.html" -->
+<font face="verdana, arial, helvetica" size="+1">About the project</font>
+<font face="verdana, arial, helvetica" size="-1">
+<br><br>
+<b>CBSD</b> is a wrapper from <b>sh</b>-scripts (mainly) round a <a href="http://www.freebsd.org/cgi/man.cgi?query=jail&apropos=0&sektion=0&manpath=FreeBSD+9.1-RELEASE&arch=default&format=html">jail(8)</a> subsystem an operating system 
+<a href="www.freebsd.org">FreeBSD</a> OS. Any new functional in OS at this stage it is not brought - everything that can do <b>cbsd</b> scripts, you can do by command (by commands, tens commands, hundreds of commands) in CLI through the corresponding utilities. 
+The project becomes as for relief of own needs on administration of jails and servers, and 'just for fun'.<br>
+<br>
+From the list of own needs it is possible to note the following actions:
+<br><br>
+<li> fast deploy of jail from scratch
+<li> export and import of jail to/into the image
+<li> jail cloning (including on the remote node)
+<li> zfs snapshots for jail 
+<li> accounting of a traffic per jail via ipfw
+<li> jail resource management (priority (re-nice), RACCT/RCTL, file quotas)
+<li> jail replication on remote node
+<li> distribution of "standard" jails, jail with a certain set of software and services
+<li> The WEB interface and the centralized management of jails farm
+<li> building pkg repository
+<li>...
+</font>
+<br><br>
+<font size="+1">A bit of WHY...</font>
+<font face="verdana, arial, helvetica" size="-1">
+<br><br>Why FreeBSD, why jail, why sh, why...":
+<br>
+<br>The FreeBSD OS and jail are chosen for the project as i very much like jail-based an approach in administration of servers for some reasons, the most important for me are:
+<br><li>absence at overhead on virtualization. Without VIMAGE, the jail code still has very few if/case of designs in a kernel
+<br><li>following to security recommendation - divide and rule. It is desirable each service or group of services to isolate from others
+<br><li> In my administrator's practice often was necessary to do mass of the same installations - FAMP, MTA, KDE4. at some instant it wanted to have
+in advance created and adjusted environment. The jail approach allows to enter the server into an operation instantly, after the FreeBSD installation from scratch - 
+to deploy the mail server or to start with KDE4, any settings in the master a host after the minimum bsdinstall it is not necessary to do - enough
+to download in advance created environment through the network. Possibility to create desktop environment image have the special charm in the form of an absence of need 
+to create the 1024th distribution with differing from the others 1023 only by a wallpaper.
+<br><li>Convenience for backup and a fast deploy jails on the fresh installation.
+<br><li>Build you own local libraries/repository of jails
+<br><li> at already written plus in a look lack of overhead for virtualization, with the corresponding monitoring, it is possible to assembly the most effective systems.
+For example, there are jails with NoSQL (redis, memcached) - dense work with memory, a jail with MySQL - dense work with CPU, a jail with Web jails (CPU and network),
+jails with Samba (dense work with a network and storage). It is possible to complete each physical note with such jail with which any of the hardware components won't stand idle
+and thus, jails won't fight for resources with other jails
+<br><li>..
+<br><br>
+The most part of a code is written on <b>sh</b>  for the reason that similar tasks don't demand any mathematical logic - scripts generally repeating a lot of input
+command of system administrator in the console, i.e., work with external utilities, such as: zfs, zpool, sudo, pkg, rsync..., respectively, need to apply languages
+programming generally be absent. The part of bottlenecks, and also some functional (logtail, replication, node wathing daemon and ..) are written on C (in plans
+to rewrite bottlenecks on C and further, however not everywhere it is possible: zfs, sudo and тд - have no any libraries through which it would be possible to work with them)
+<br><br>
+The list of 3rd-party software which use in cbsd work: <b>rsync</b>,<b>sudo</b>,<b>libssh2</b>,<b>sqlite3</b>
+<br><br>
+<font size="+1">Features</font>
+<font face="verdana, arial, helvetica" size="-1">
+<br><br>
+<li> a ready repository for kernels and the worlds that takes buildworld/installworld steps not the obligatory.
+<li> When steps of buildworld/installworld are undertaken, src.conf for a world customization is supported
+<li> base the catalog can place on MD/RAM/TMPFS on a disk that can be useful at a big num of jails with RO mounted base
+<li> support of ZFS of file system, ZFS of quotas, ZFS snapshots
+<li> GUI configurator of jails (DIALOG/WEB)
+<li> VIMAGE support
+<li> traffic count per jail
+<li> import/export of jails
+<li> descriptions for jails
+<li> cold migration of a jails between nodes
+<li> management of sequence of start of jail and their priority
+<li> RACCT/RCTL support
+<li> a repository with ready jail template
+<li> jail replication
+<li> possibility to create own scenarios for creation of jails/repository
+<li> jail converting into PXE/ISO/Memstick-image
+<li> ...
+<br><br>
+<font size="+1">Goals</font>
+<font face="verdana, arial, helvetica" size="-1">
+<br><br>
+<li> automatic for the peolple)
+<li> convenient management, monitoring and control of jails
+<li> application platform with services on demand. If SQL Server is necessary - download & run  jail, 
+is necessary a Internet Gateway - download & run jail, is necessary for AMP, Asterisk PBX, MTA, to GIT a repository - 
+download and start the corresponding jail. Each service is isolated from others. 
+As restriction in number of jail can act only hardware resources. If rested against hardware resources - establish 
+the second node, migrate a part of jails and continue to work.
+<li> Accounting for resources of nodes within which it is possible to create N quantity of environments (for example, 
+jail hosting for individual person)
+<li> images library
+<li> possibility of use of the central storage of images which it is possible to develop and provide for other users.
+<li> and so on...
+</font>
+</BODY>
+</HTML>

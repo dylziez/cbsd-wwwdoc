@@ -1,0 +1,28 @@
+<b>Команды</b>:<br>
+<pre>
+% cbsd jdescr
+</pre>
+<b>Описание</b>:
+<br><br>
+Для каждой клетки можно ввести какое-то описание/аннотацию. <b>cbsd jdescr</b> без параметров выводит описание для всех клеток на ноде.
+<br>
+Команда<br>
+<pre>
+% cbsd jdescr mode=update jname=jname
+</pre>
+запустит редактор <b>vi</b> для редактирования описания. Через параметр <b>editor</b> можно указать 
+альтернативный редактор (например, понимающий UTF8) - <b>vim</b>, <b>mcedit</b> и тп.
+Описание хранится в ASCII-файле, сохраняемый в каталоге $workdir/jails-system/<b>jname</b>/descr, где <b>jname</b> - имя редактируемой клетки.
+Соответственно, файл можно просто скопировать. Поскольку каталог jails-system учавствует в jcoldmigrate, jclone, jimport/export и тп операциях, 
+описание будет сохраняться.
+<br><br>
+<b>Пример</b> (запустить редактор mcedit для редактирования описания клетки kde4):
+<pre>
+% cbsd jdescr jname=kde4 editor=mcedit mode=update
+<br><br><center>
+<img src="/html/img/jdescr1.png"></img>
+<br><br>
+<img src="/html/img/jdescr2.png"></img>
+<br><br>
+</center>
+</p>

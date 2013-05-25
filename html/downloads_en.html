@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <META http-equiv="content-type" content="text/html; charset=UTF-8">
+  <META name="Description" content="CBSD Store">
+  <META name="Keywords" content="CBSD, BSDStore">
+  <LINK rel="shortcut icon" href="favicon.ico">
+  <title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<!--# include file="/html/translate_en.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">Download</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<hr><br>
+<br>All .img (USB Memstick images) can be written to an USB memory stick via command:
+<pre>
+dd if=_path_to_img.img_ of=/dev/da0 bs="10240" conv="sync"
+</pre>
+Be careful to make sure you get the target (of=) correct.
+<br>
+<br>
+At the moment, the generation of <b>cbsd</b> images is disabled. To install from source, use <a href="installing_cbsd_en.html">these instructions</a>.
+<br>If you still want to download something certainly ;-), download FreeBSD LiveCD of rescue jail:  <a href="rescuebsd_en.html">Rescuecbsd LiveCD</a>.
+<br>
+<FONT face="verdana,arial,helvetica" size="-1">pkg repository url used to build jail (for <b>/usr/local/etc/pkg.conf</b>):</font>
+<br><br>
+<table>
+<tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD 9.1</b></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.1/xorg</td><td><i> # (default version, NVIDIA GL)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.1/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.1/nox11</td><td><i> # (WITHOUT_X11=yes)</i></br></tr>
+<tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD CURRENT aka 10.0</b></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/xorg</td><td><i> # (default version, NVIDIA GL)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
+<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/nox11</td><td><i> # (WITHOUT_X11=yes)</i></br></tr>
+</table>
+<br>
+Note: at present building for images is made only for architecture x86-64 to the absence reason in my farm of others.
+<br>
+Note2: image and data repository raised and supported more to demonstrate and functional checks of cbsd, 
+rather than for ensure one's work. For safety, train yourself not to trust any software repository on the Internet,
+Use only official and well-tested repository or build your own.
+<br><br>
+<FONT face="verdana,arial,helvetica" size="-1">images that are available for download via the command <b> cbsd repo action=get sources=img name=<i>name</i></b>:</font>
+<br><br>
+<!--# include file="/html/images.html" -->
+<br>
+</font><blockquote>
+</BODY>
+</HTML>
+

@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<body>
+<center><FONT face="verdana,arial,helvetica" size="+1">Сборка и обновление мира</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<b>Команды</b>:<br>
+<pre>
+% cbsd csup
+% cbsd buildworld
+% cbsd installworld
+</pre>
+
+<i>Примечание</i>: под словом "мир" будет подразумеваться каталог, содержащий полную копию/иерархию файлов ОС FreeBSD.
+<br><br>
+Для создания новой клетки (или запуска клетки, мир которой монтируется в RO), необходима готовая база, из которой будет
+собран новый <b>jail</b> (или которая будет подмонтирована при запуске клетки).
+
+Ниже описаны шаги для получения исходных кодов FreeBSD из SVN репозитория проекта (<a href="http://svn.freebsd.org/">http://svn.freebsd.org</a>), его компиляция и инсталляция в отдельный 
+каталог, который будет выступать базой. Данные действия могут быть востребованы, если вы не хотите пользоваться уже
+собранной версией, доступной на ресурсах <a href="ftp://ftp.freebsd.org">ftp://ftp.freebsd.org</a> и <a href="http://bsdstore.ru">http://bsdstore.ru</a> (например по причинам безопасности), которые можно получить через
+<b>cbsd repo</b>. Также, сборкой можно получить не только релизы, но и промежуточные варианты веток.
+
+<br><br>Сборка или обновление состоит из трех шагов: 
+<br>
+<h3>1) Получение или обновление исходного кода FreeBSD через cbsd csup:</h3>
+Получение или обновление исходного кода для той версии FreeBSD, на котором в данные момент работает текущая нода:
+<pre>
+% cbsd csup
+</pre>
+Получение или обновление исходного кода для конкретной версии FreeBSD, например, для 9.2:
+<pre>
+% cbsd csup ver=9.2
+</pre>
+Получение или обновление исходного кода для STABLE ( например, для RELENG_9 ):
+<pre>
+% cbsd csup ver=9 stable=1
+</pre>
+Эти команды, при наличие исходных кодов в SVN, наполнят каталоги <b>$workdir/src/src_$ver</b>
+<h3>2) Компиляция исходного кода через cbsd buildworld:</h3>
+Результат, полученный с шага 1, может быть использован для компиляции мира.
+Сборка мира, при наличие <b>$workdir/src/src_$ver</b> каталога для текущей версии ядра:
+<pre>
+% cbsd buildworld
+</pre>
+При этом, объектные файлы, при наличие прошлых сборок, предварительно удалены не будут (make clean).
+Если в процессе повторной сборки возникла ошибка, имеет смысл заставить систему провести чистку <b>.o</b>-файлов:
+<pre>
+% cbsd buildworld clean=1
+</pre>
+По-умолчанию, осуществляется многопоточная сборка, где количество <b>job</b>-ов равняется количество ядер (sysctl hw.ncpu).
+Количество параллельных потоков регулируется через параметр maxjobs, например, для сборки в одном потоке:
+<pre>
+% cbsd buildworld maxjobs=1
+</pre>
+При компиляции, может учитываться персональный <a href="http://www.freebsd.org/cgi/man.cgi?query=src.conf&apropos=0&sektion=0&manpath=FreeBSD+9-current&arch=default&format=html">src.conf(5)</a>,
+в котором можно указывать стандартные KNOBS-ы. Файл src.conf должен лежать в каталоге $workdir/etc/ с именем <b>src-</b><i>basename</i><b>.conf</b>, где basename - любое имя-название конфигурации.
+Например, в стандартной cbsd имеются файлы /usr/jails/etc/src-lite.conf и /usr/jails/etc/src-pxe.conf. Для сборки мира с определенным src.conf, необходимо указать параметр basename:
+<pre>
+% cbsd buildworld basename=lite
+</pre>
+Последующие операции над результатом этой сборки, также должны содержать параметр basename=, поскольку результат сборки будет сформирован в катало <b>$workdir/basejail/base_$basename_$arch_$ver</b>,
+где $basename - название конфигурации.
+<br><br>Другие параметры buildworld:<br><br>
+<li><i>ver</i>  - указать конкретную версию
+<li><i>arch</i> - сборка для конкретной архитектуры
+<li><i>stable</i> - сборка RELENG_X ветки
+<br>
+<h3>3) Инсталляция мира через cbsd installworld:</h3>
+Результат, полученный с шага 2, можно использовать для инсталляции нового мира в <b>${workdir}/basejail/base_*</b> каталог, откуда уже будет монтироватся в режиме RO, или формироваться новая клетка.
+Инсталляция файлов для текущей версии системы:
+<pre>
+% cbsd installworld
+</pre>
+Инсталляция файлов для версии 9.2, собранной с использованием src.conf под именем lite:
+<pre>
+% cbsd installworld basename=lite ver=9.2
+</pre>
+Другие параметры installworld:
+<br><br>
+<li><i>arch</i> - инсталляция для конкретной архитектуры
+<li><i>stable</i> - инсталляция RELENG_X ветки
+<br><br>
+Имея готовый мир в <b>${workdir}/basejail</b>, можно приступать к <a href="/html/wf_jcreate_ssi.html">созданию клеток</a>.
+</body>
+</html>

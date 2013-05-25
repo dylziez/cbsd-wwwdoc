@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<body>
+<center><FONT face="verdana,arial,helvetica" size="+1">Установка cbsd</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+
+<a name="Работа-с-нодами"></a>
+<h1 ><ins>Работа с нодами</ins><a href="#Работа-с-нодами"></a></h3>
+<p>cbsd modncping<br />cbsd nodels<br />cbsd nodepingerls<br />cbsd nodestatus<br />cbsd nodetopinger<br />cbsd node - добавить/удалить/вывести список нод к текущему окружению. После этого становится возможным запускать удаленные команды на ноде:<br />cbsd rnode - <br />cbsd rexe - выполнение команды</p>
+
+<h1 ><ins>Работа CBSD с репозиторием</ins><a href="#Работа-CBSD-с-репозиторием"></a></h3>
+bsd repo --help - доступные аргументы
+<li>cbsd repo action:  что нужно сделать. action= может принимать значение:
+list - получить список
+get - скачать
+put - залить (недоступно в этой версии)
+
+<li>cbsd repo sources - выбор источника. sourcec может принимать значение:
+src - исходные коды FreeBSD (результат cbsd csup )
+obj - объектные файлы (результат cbsd buildworld )
+base - база FreeBSD (результат cbsd installworld )
+img - клетка
+kernel - ядро
+<li>cbsd repo name - имя файла (необходимо указывать при sources=img или sources=kernel)
+
+<a name="Системные-команды"></a>
+<h1 ><ins>Системные команды</ins><a href="#Системные-команды"></a></h3>
+<p>cbsd buildkernel<br />cbsd buildworld<br />cbsd csup<br />cbsd deleteoldlibs<br />cbsd destroybase<br />cbsd destroyobj<br />cbsd destroysrc<br />cbsd installworld</p>
+
+<h1 ><ins>Примеры использования</ins><a href="#cbsd-примеры"></a></h3>
+Получить базу для текущей версии FreeBSD, которая будет использоваться для запуска клеток:
+<b><pre>
+cbsd repo action=get sources=base
+</b></pre>
+
+Создать новую клетку с именем test:
+<b><pre>
+% cbsd jconstruct-tui
+</b></pre>
+(в диалоговом меню задать имя, например, test (пункт jname), задать полное имя хоста (пункт fqdn), например - test.my.domain, задать ip адрес, например: 192.168.1.20/24 (пункт - ips). 
+Минимальная информация готова - жмем GO)
+По окончанию работы и выходе из диалога, будет написан путь к файлу, по которому отработает jcreate:
+<b><pre>
+% cbsd jcreate jconf=/usr/jails/tmp/20120404_22_10-test.jconf
+</b></pre>
+
+Список клеткок:
+<b><pre>
+% cbsd jls
+</b></pre>
+
+Переименовать клетку test в клетку www:
+<b><pre>
+% cbsd jrename old=test new=www
+</b></pre>
+
+Сменить ip4 адрес у клетки www:
+<b><pre>
+% cbsd jset jname=www ip="192.168.1.99/24"
+</b></pre>
+
+Экспортировать клетку www в образ (/usr/jails/export/www.img):
+<b><pre>
+% cbsd jexport jname=www
+</b></pre>
+
+Удалить клетку www:
+<b><pre>
+% cbsd jremove www
+</b></pre>
+
+Импортировать клетку (можно положить файл www.img в каталог /usr/jails/import, либо указать полный путь к имиджу):
+первый вариант: 
+<b><pre>
+% cbsd jimport jname=www
+</b></pre>
+второй вариант: 
+<b><pre>
+% cbsd jimport /usr/jails/export/www.img
+</b></pre>
+
+клонировать клетку www в новую www2 (все параметры остаются прежние):
+<b><pre>
+% cbsd jclone old=www new=www2 
+</b></pre>
+
+запустить клетку www:
+<b><pre>
+% cbsd jstart www
+</b></pre>
+
+зайти в клетку www:
+<b><pre>
+% cbsd jlogin www
+</b></pre>
+
+Добавить удаленную ноду:
+<b><pre>
+% cbsd node mode=add node=192.168.1.3 pw=superpassword port=22
+</b></pre>
+
+где port = это порт ssh, pw - это пароль пользователя cbsd (устанавливался на этапе cbsd initenv. Также, можно сменить через команду passwd cbsd на удаленной машине)
+
+Просмотреть список нод:
+<b><pre>
+% cbsd nodels
+</b></pre>
+
+Мигрировать клетку www на удаленную ноду (в том случае, если статус клетки - запущенная, система ее запустит после миграции на удаленной машине, на источнике - остановит и переведет в статус Slave)
+<b><pre>
+% cbsd jcoldmigrate node=nodename jname=www2
+</b></pre>
+
+где nodename = имя ноды полученное после node mode=add
+(после миграции, клетка на источнике переводится в режиме Slave)  (отражено по cbsd jls). Поменять режим можно через
+<b><pre>
+% cbsd jswmode jname=www status=master
+</b></pre>
+
+просмотреть все клетки, в том числе и на добавленных нодах (с выводом имен нод):
+<b><pre>
+% cbsd jls alljails=1 shownode=1
+</b></pre>
+
+выполнить удаленную команду на ноде:
+<b><pre>
+% cbsd rexe node=nodename cmd=date
+</b></pre>
+или
+<b><pre>
+% cbsd rexe node=nodename ls -la /tmp
+</b></pre>
+
+получение списка клеток в репозитории:
+<b><pre>
+% cbsd repo action=list sources=img
+</b></pre>
+
+Пример получения базы:
+<b><pre>
+% cbsd repo action=get sources=base
+</b></pre>
+
+Пример получения клетки amp
+<b><pre>
+% cbsd repo action=get sources=img name=amp
+</b></pre>
+
+</body>
+</html>

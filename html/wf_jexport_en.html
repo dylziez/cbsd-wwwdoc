@@ -1,0 +1,24 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jexport
+</pre>
+
+<b>Description</b>:
+<br>
+<p style="color:RED">Attention: command execution allows on jail in status <b>On</b>. However it is necessary to remember (especially 
+for jail with databases) when you import such jails, with a high probability it is possible to got problems with inconsistency filesystem in jails,
+old .pid files that can break work of the imported jails
+</p>
+Export jail into file (*.img). In  <b>jname</b> arguments you can set jail for export. img-file stored in <i><b>$workdir/export</b></i> directory. Original jail 
+after exports is not modified
+<br><br>
+<b>Example</b> (export mysqljail jail to  mysqljail.img):
+<br>
+<pre>
+% cbsd jexport jname=mysqljail
+</pre>
+<br><center>
+<img src="/html/img/jexport1.png"></img>
+<br><br>
+</center>
+</p>

@@ -1,0 +1,66 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jsnapshot
+</pre>
+
+<b>Description</b>:
+<br><br>
+Show the list, create, delete and rollback snapshots for a jail when node startend on ZFS filesystem and <b>zfsfeat</b> in file <b>$workdir/nc.inventory</b> set to 1.
+through <b>mode</b> parameter you can you specify that it is necessary to make. Possible options:
+<br><br>
+<b>list</b> - show snapshot liss for current jail
+<br>
+<b>create</b> - create snapshot for jail
+<br>
+<b>destroy</b> - delete snapshot for jail
+<br>
+<b>destroyall</b> - remove all snapshots for jail
+<br>
+<b>clone</b> - clone snapshot into new jail
+<br>
+<b>rollback</b> - rollback jail to current snapshot state
+<br><br>
+Additional arguments:
+<br><br>
+<b>jname</b> - for what jail action is made
+<br>
+<b>snapname</b> - snapshot name
+<br>
+<b>snapfs</b> - 
+<br><br>
+<b>Example</b>:
+<br><br>
+create snapshot named <i>gromozeka</i> for <b>jail1</b> jail:
+<br>
+<pre>
+% cbsd jsnapshot mode=create jname=jail1 snapname=gromozeka
+</pre>
+create snapshot named <i>zelepuka</i> for <b>jail1</b> jail:
+<pre>
+% cbsd jsnapshot mode=create jname=jail1 snapname=zelepuka
+</pre>
+<br>
+Run jail1 and stop after some modification:
+<pre>
+% cbsd jstart jail1
+..
+% cbsd jexec jname=jail1 cp /bin/date /root
+% cbsd jexec jname=jail1 file -s /root/date
+/root/date: ELF 64-bit LSB executable, x86-64, version 1 (FreeBSD), dynamically linked (uses shared libs), for FreeBSD 9.0 (900506), stripped
+% cbsd jstop jail1
+..
+</pre>
+Rollback jail1 to snapshot zelepuka state:
+<pre>
+% cbsd jsnapshot mode=rollback snapname=zelepuka jname=jail1
+% cbsd jstart jail1
+...
+% cbsd jexec jname=jail1 file -s /root/date
+/root/date: ERROR: cannot open `/root/date' (No such file or directory)
+</pre>
+
+<br><center>
+<img src="/html/img/jsnapshot1.png"></img>
+<br><br>
+</center>
+</p>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<body>
+<!--# include file="/html/translate_en.html" -->
+<center><FONT face="verdana,arial,helvetica" size="+1">cbsd syntax</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<p>All commands begin with cbsd prefix:
+<b>
+<pre>
+% cbsd jls
+% cbsd jstop jname
+% cbsd jstart jname
+% cbsd node mode=list
+...
+</pre></b>
+<p>The cbsd command can accept the arguments which are written in a "param=value" form <br />cbsd commands can have both obligatory arguments, and arguments which can be lowered.
+To receive the list of arguments it is possible on command:</p>
+<b>
+<pre>
+% cbsd &lt;cmd&gt; --help
+</pre>
+</b>
+- with a conclusion and the short description, what args are obligatory, and what are optional.
+<p>or</p>
+<b>
+<pre>
+% cbsd &lt;cmd&gt; --args
+</pre>
+</b>
+for a conclusion of all expected arguments at the cmd command.
+<br><br>
+<b>Example</b>:
+<br><br>
+Command
+<pre>
+% cbsd --help
+</pre>
+shows list of all cbsd command 
+<br><br>Command
+<pre>
+% cbsd jsnapshot --help
+</pre>
+show all possible parameters for <b>jsnapshot</b>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jconfig jname=jail1
+</pre>
+
+<b>Descriptions</b>:
+configuration parameters jail
+<br><p> Each cell has its own rc.conf file in <i><b>$workdir/jails-rcconf/</b></i>, own the fstab file for a list of mounted file systems in the directory<i><b>$workdir/jails-fstab/</b></i> and 
+its own directory to store the statistics, descriptions of jails, configuration wizards and other supporting files in a directory <i><b>$workdir/jails-system/</b></i></p>
+</p>
+In the TUI-dialog can be brought, not all possible configuration options jails, in which case they can be corrected in the corresponding files via any text editor when jail is stopped
+<br>
+<h3>Jails IP address</h3>
+IP addresses that are bound to the jail sets in <i><b>$workdir/jails-rcconf/</b>rc.conf_name</i> file in the parameter <b>ip4_addr</b>.
+As an IP may serve as IPv4, and the IPv6 address. When starting and stopping jail, working with IP may take place in two modes -
+automatic on-the-fly creation of IP addresses for the jail at the time of launch + automatic removal from the interface IP when stopping or
+the use of previously initialized IP addresses.
+<p>
+When for jails assigned to more than one address, they should be listed separated by spaces or commas. IP can include network prefix specified
+through IP/<b>prefix</b>. By default, aliases created with the prefix /32, that may not be appropriate if the jail uses a separate subnet from the network server - in
+this case, the correct <b>/prefix </b> is needed.
+
+<p>
+The parameter that controls this behavior stored in <i><b>$workdir/jails-rcconf/</b>rc.conf_name</i> file
+and called <b>interface</b>. If it is not in <b>rc.conf</b>-file or the value is 0, jstart and jstop will not be called
+ifconfig alias and ifconfig -alias, respectively. If its value is 1, before jail start, this command will be executed:
+<pre>
+ifconfig <i>alias</i> <b>interface</b> <b>ips</b>,
+</pre>
+and when jail stop:
+<pre>
+ifconfig <b>inteface</b> <b>ips</b> <i>-alias</i>
+</pre>
+Be careful with this option, if you have only one IP for server that is used and this IP is assigned to the same jail:
+when stopping jail, ip address of the server will be removed automatically that will make the server unavailable. In this case, you need to use in jail rc.conf:
+
+interface=0
+
+or just remove "interface" parameters from jail rc.conf.
+
+An example of a piece of configuration to create three IP addresses at the start of the jail:
+<pre>
+..
+interface=1
+ip4_addr="176.9.147.18/29 2a01:4f8:160:3002::1/64 192.168.0.2/24"
+..
+</pre>
+
+<h3>Mounting File Systems in jail</h3>
+
+Each jail has own fstab file, which lists the file systems that are mounted in a jail at startup. This file is located in the file
+<i><b>$workdir/jails-fstab/</b>fstab.name</i> and coincides with the syntax of the file system format <b>/etc/fstab</b> with the exception that, as the mount point indicated
+path relative to the jail root, not the master system. For example, if you want to jail1, which is located at
+<br>
+/usr/jails/jails/jail1 
+<br>
+on the master host, mount tmpfs for /tmp jail dir  (those actually in /usr/jails/jails/jail1/tmp from master filesystem), then the entry in the
+<i><b>$workdir/jails-fstab/</b>fstab.jail1</i> should look like this:
+<pre>
+..
+tmpfs /tmp tmpfs rw 0 0
+..
+</pre>
+
+
+<br>
+//to be continued

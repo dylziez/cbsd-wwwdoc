@@ -1,0 +1,28 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jdescr
+</pre>
+<b>Descriptions</b>:
+<br><br>
+Each jail can have the description/summary. <b>cbsd jdescr</b> without arguments just out description for all jails on the local node.
+<br>
+Command<br>
+<pre>
+% cbsd jdescr mode=update jname=jname
+</pre>
+start editor <b>vi</b> for entering description. By argument <b>editor</b> you can start alternative favorite editor (for example,
+who can UTF8) - <b>vim</b>, <b>mcedit</b>.
+Descriptions stored in ASCII-file, placed to <b>$workdir/jails-system/$jname/descr</b> file, where <b>jname</b> - name of jail.
+This file you can just copy. As directory jails-system participates in jcoldmigrate, jclone, jimport/export operations, description 
+will be will remain.
+<br><br>
+<b>Example</b> (run mcedit editor for description edit for kde4 jail):
+<pre>
+% cbsd jdescr jname=kde4 editor=mcedit mode=update
+<br><br><center>
+<img src="/html/img/jdescr1.png"></img>
+<br><br>
+<img src="/html/img/jdescr2.png"></img>
+<br><br>
+</center>
+</p>

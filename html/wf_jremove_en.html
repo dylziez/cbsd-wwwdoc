@@ -1,0 +1,27 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jremove jail1 jail2 ..
+</pre>
+
+<b>Description</b>:
+Removal of jail mentions all files anyway connected with a jail:
+<br><br>
+a) config file rc.conf and fstab for current jail
+<br>
+b) data directory or ZFS filesystem with jail data
+<br>
+c) statistics and description for jail
+<br>
+d) snapshots
+<br><br>
+in a case when <b>jremove</b> executed for jail in status On, it will be automatically stopped.
+</p>
+<b>Example</b>:
+<br>
+<pre>
+% cbsd jremove jail1
+</pre>
+<br>
+<center>
+<img src="/html/img/jremove1.png"></img>
+</center>

@@ -1,0 +1,62 @@
+<b>Команды</b>:<br>
+<pre>
+% cbsd ddns
+</pre>
+
+<b>Описание</b>:
+<br><br>
+Выполняет регистрацию записей DNS в соответствующих зонах, относящихся к клетке. Для ее корректной работы необходим корректно настроенный DNS сервер и ключ для обновления зоны.
+Поскольку заинтересованных в обновлении зон  при запуске и остановке клетки может быть несколько, их можно перечислить в <b>rc.conf</b> соответствующей клетки.
+
+Если параметр <i>ddns_zone_list</i> не пустой, при выполнении <b>jstart</b> и <b>jstop</b>, команды
+<pre>
+cbsd ddns mode=add jname=xxx
+</pre>
+и
+<pre>
+cbsd ddns mode=delete jname=xxx
+</pre>
+
+выполняются автоматически.
+Параметр <i>mode</i> означает выполняемое действие с записью - может быть <i>add</i> или <i>delete</i>. 
+
+Минимальная конфигурация в rc.conf клетки:
+<pre>
+ddns_zone_list="";
+</pre>
+
+должна иметь список имен конфигураций для зон. Одна запись для одной зоны. В имени не должно быть точек.
+
+<pre>
+ddns_key_<b>name_of_zone</b>="";
+</pre>
+
+Параметр содержит путь к файлу приватного ключа зоны <i>name_of_zone</i>, перечисленной в <b>ddns_zone_list</b>.
+
+<pre>
+ddns_zones_<b>name_of_zone</b>="";
+</pre>
+
+содержит список тех записей, которые должны быть обновлены в соответствующей зоне.
+<br><br>
+<b>Пример:</b> конфигурация для обновления двух зон: my.domain и bsdstore.ru и добавлении или удалении
+IP адресов клетки под записями test1.my.domain + test2.my.domain и relay.bsdstore.ru:
+<br>
+<pre>
+ddns_zone_list="my_domain bsdstore";
+ddns_key_my_domain="/usr/jails/etc/zonekeys/Kmy.domain.+157+52142.private";
+ddns_key_bsdstore="/usr/jails/etc/zonekeys/Kbsdstore.+157+52142.private";
+ddns_zones_my_domain="jail1.my.domain jail1.my.domain";
+ddns_zones_bsdstore="relay.bsdstore.ru";
+</pre>
+
+Конфигурация для DNS сервера (named):
+<pre>
+key bsdstore.ru. {algorithm "HMAC-MD5";secret "YrVW9yP6gNMA7VbcU/r2mSIwYnFj/XkCDd6QuqOHE26/ipnrPy+eXrKrUyaFhB2XWNdVLUX7QCUkfhg4zN5YiA==";};
+zone "bsdstore.ru" {type master;file "/etc/namedb/dynamic/bsdstore.ru";allow-update {key bsdstore.ru; };};
+</pre>
+
+ключи сгеренированы через:
+<pre>
+dnssec-keygen -b 512 -a HMAC-MD5 -v 2 -n HOST bsdstore.ru.
+</pre>
