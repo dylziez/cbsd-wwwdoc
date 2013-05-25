@@ -1,0 +1,29 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jrename
+</pre>
+
+<b>Description</b>:
+Performs renaming jail and relevant data in the new name
+<br>
+<p>Can be executed only on the stopped jail. <br>
+<p>As mandatory parameters: <br>
+<b>old</b> - old name of the jail
+<br>
+<b>new</b> - new name of the jail
+<br>
+<p>As optional parameters:<br>
+<b>host_hostname</b> - FQDN, new full hostname of jail
+<br>
+<b>ip4_addr</b> - new IP address of the jail (if multiple IPs, separated by a comma with no spaces)
+<br><br>
+<b>Example</b> (renaming jail <b>jail1</b> into <b>jail50</b> with a FQDN and ip addresses change):
+<br>
+<pre>
+% cbsd jrename old=jail1 new=jail50 host_hostname=jail50.my.domain ip4_addr=192.168.0.5/24
+</pre>
+<br><br><center>
+<img src="/html/img/jrename1.png"></img>
+<br><br>
+</center>
+</p>
