@@ -1,0 +1,71 @@
+<b>Команды</b>:<br>
+<pre>
+% cbsd jrctl
+% cbsd jrctl-tui
+</pre>
+
+<b>Описание</b>:
+<br><br>
+Для просмотра статистики, снятия и установки лимитов на jail, используется команда cbsd jrctl.
+Данная команда с ключами
+<pre>
+% cbsd jrctl mode=apply  ...
+</pre>
+
+<pre>
+% cbsd jrctl mode=unset  ...
+</pre>
+
+вызываются автоматически для установки или снятия лимитов при работе команд jstart и jstop соответственно. 
+
+Через флаг 
+<pre>
+% cbsd jrctl mode=show
+</pre>
+
+высвечивается текущая статистика по потребляемым ресурсам jail, что может быть использовано для генерации отчетов и графиков
+по загрузке jail, а также, используется демоном cbsd для генерации рекомендаций о необходимости добавлять новые ресурсы и предупреждений перегрузок.
+
+Через jrctl можно установить следующие лимиты jail:
+
+a) Все что позволяет делать фреймворк FreeBSD <a href="http://man.freebsd.org/rctl/8">rctl(8)</a>, а именно:
+<pre>
+cputime 	   CPU time, in seconds
+datasize	   data size, in bytes
+stacksize	   stack size, in bytes
+coredumpsize	   core dump size, in bytes
+memoryuse	   resident set size, in bytes
+memorylocked	   locked memory, in bytes
+maxproc 	   number of processes
+openfiles	   file descriptor table size
+vmemoryuse	   address space limit, in bytes
+pseudoterminals    number of PTYs
+swapuse 	   swap usage, in bytes
+nthr		   number of threads
+msgqqueued	   number of queued SysV messages
+msgqsize	   SysV message queue size, in bytes
+nmsgq		   number of SysV message queues
+nsem		   number of SysV semaphores
+nsemop		   number of SysV semaphores modified in a single semop(2) call
+nshm		   number of SysV shared memory segments
+shmsize 	   SysV shared memory size, in bytes
+wallclock	   wallclock time, in seconds
+</pre>
+<p>b) Выставлять уровень приоритета одного jail перед другими через <a href="http://www.freebsd.org/cgi/man.cgi?query=renice&sektion=8">renice(8)</a>, к примеру,
+вы можете захотеть выдать клетке с distcc минимальный приоритет, тогда как клетке с WEB сервером - средний, а клетке с базой данных - максимальный.
+<br>
+<p>c) В случае использования файловой системы ZFS, установить квоту по использованию файловой системы.
+<br>
+// WIP
+
+
+<br><br>
+<b>Пример</b>:
+<br>
+<pre>
+% 
+</pre>
+<br><center>
+<img src="/html/img/jrctl1.png"></img>
+</center>
+</p>
