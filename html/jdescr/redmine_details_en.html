@@ -19,7 +19,11 @@ After downloading images and set correct ip address of jail, run install script 
 <pre>
 % cbsd jconfig jname=redmine redmineinstall
 </pre>
-<p>If all goes well, when you start the jail, you automatically get a clean Redmine installation which is available for configuring via Redmine default login and password: admin
+<p>If all goes well, when you start the jail:
+<pre>
+% cbsd jstart redmine
+</pre>
+your node automatically get a clean Redmine installation in the jail which is available for configuring via http://FQDN with Redmine default login and password: admin
 <br>
 </BODY>
 </HTML>
