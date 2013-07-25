@@ -55,7 +55,7 @@ and thus, jails won't fight for resources with other jails
 The most part of a code is written on <b>sh</b>  for the reason that similar tasks don't demand any mathematical logic - scripts generally repeating a lot of input
 command of system administrator in the console, i.e., work with external utilities, such as: zfs, zpool, sudo, pkg, rsync..., respectively, need to apply languages
 programming generally be absent. The part of bottlenecks, and also some functional (logtail, replication, node wathing daemon and ..) are written on C (in plans
-to rewrite bottlenecks on C and further, however not everywhere it is possible: zfs, sudo and тд - have no any libraries through which it would be possible to work with them)
+to rewrite bottlenecks on C in the further.
 <br><br>
 The list of 3rd-party software which use in cbsd work: <b>rsync</b>,<b>sudo</b>,<b>libssh2</b>,<b>sqlite3</b>
 <br><br>
@@ -85,15 +85,8 @@ The list of 3rd-party software which use in cbsd work: <b>rsync</b>,<b>sudo</b>,
 <br><br>
 <li> automatic for the peolple)
 <li> convenient management, monitoring and control of jails
-<li> application platform with services on demand. If SQL Server is necessary - download & run  jail, 
-is necessary a Internet Gateway - download & run jail, is necessary for AMP, Asterisk PBX, MTA, to GIT a repository - 
-download and start the corresponding jail. Each service is isolated from others. 
-As restriction in number of jail can act only hardware resources. If rested against hardware resources - establish 
-the second node, migrate a part of jails and continue to work.
-<li> Accounting for resources of nodes within which it is possible to create N quantity of environments (for example, 
-jail hosting for individual person)
+<li> application platform with services on demand. 
 <li> images library
-<li> possibility of use of the central storage of images which it is possible to develop and provide for other users.
 <li> and so on...
 </font>
 </BODY>
