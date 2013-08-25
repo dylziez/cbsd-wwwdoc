@@ -21,14 +21,13 @@ From the list of own needs it is possible to note the following actions:
 <br><br>
 <li> fast deploy of jail from scratch
 <li> export and import of jail to/into the image
-<li> jail cloning (including on the remote node)
+<li> jail cloning and/or migration (including to the remote node)
 <li> zfs snapshots for jail 
-<li> accounting of a traffic per jail via ipfw
+<li> traffic accounting and resource information per jail
 <li> jail resource management (priority (re-nice), RACCT/RCTL, file quotas)
 <li> jail replication on remote node
 <li> distribution of "standard" jails, jail with a certain set of software and services
 <li> The WEB interface and the centralized management of jails farm
-<li> building pkg repository
 <li>...
 </font>
 <br><br>
@@ -36,23 +35,23 @@ From the list of own needs it is possible to note the following actions:
 <font face="verdana, arial, helvetica" size="-1">
 <br><br>Why FreeBSD, why jail, why sh, why...":
 <br>
-<br>The FreeBSD OS and jail are chosen for the project as i very much like jail-based an approach in administration of servers for some reasons, the most important for me are:
-<br><li>absence at overhead on virtualization. Without VIMAGE, the jail code still has very few if/case of designs in a kernel
-<br><li>following to security recommendation - divide and rule. It is desirable each service or group of services to isolate from others
-<br><li> In my administrator's practice often was necessary to do mass of the same installations - FAMP, MTA, KDE4. at some instant it wanted to have
-in advance created and adjusted environment. The jail approach allows to enter the server into an operation instantly, after the FreeBSD installation from scratch - 
-to deploy the mail server or to start with KDE4, any settings in the master a host after the minimum bsdinstall it is not necessary to do - enough
+<br>The FreeBSD/jail are chosen for the project for several reasons, the most important of which:
+<br><li>absence at overhead on virtualization. Without VIMAGE, the jail code still has very few if/case of designs in a kernel;
+<br><li>following to security recommendation - "divide and conquer". It is desirable each service or group of services to isolate from others;
+<br><li>Systems engineers often have to do a lot of similar installations - AMP, MTA, KDE4. At some instant it wanted to have in advance created and adjusted environment. 
+The jail approach allows to enter the server into an operation instantly, after the FreeBSD installation from scratch - 
+to deploy the mail server or to start with KDE4, any settings in the master host is not necessary to do - enough
 to download in advance created environment through the network. Possibility to create desktop environment image have the special charm in the form of an absence of need 
-to create the 1024th distribution with differing from the others 1023 only by a wallpaper.
-<br><li>Convenience for backup and a fast deploy jails on the fresh installation.
-<br><li>Build you own local libraries/repository of jails
+to create the 1024th distribution with differing from the others only by a wallpaper and package sets.
+<br><li>Convenience for backup and a fast deploy jails on the fresh installation;
+<br><li>Building your own local repository/library of jails with cistomizable options through <a href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports.html">FreeBSD ports</a>;
 <br><li> at already written plus in a look lack of overhead for virtualization, with the corresponding monitoring, it is possible to assembly the most effective systems.
 For example, there are jails with NoSQL (redis, memcached) - dense work with memory, a jail with MySQL - dense work with CPU, a jail with Web jails (CPU and network),
 jails with Samba (dense work with a network and storage). It is possible to complete each physical note with such jail with which any of the hardware components won't stand idle
 and thus, jails won't fight for resources with other jails
 <br><li>..
 <br><br>
-The most part of a code is written on <b>sh</b>  for the reason that similar tasks don't demand any mathematical logic - scripts generally repeating a lot of input
+The most part of a code is written on <b>sh</b> for the reason that similar tasks don't demand large mathematical logic - scripts generally repeating a lot of input
 command of system administrator in the console, i.e., work with external utilities, such as: zfs, zpool, sudo, pkg, rsync..., respectively, need to apply languages
 programming generally be absent. The part of bottlenecks, and also some functional (logtail, replication, node wathing daemon and ..) are written on C (in plans
 to rewrite bottlenecks on C in the further.
