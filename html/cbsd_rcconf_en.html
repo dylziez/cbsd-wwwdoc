@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<!--# include file="/html/translate_en.html" -->
+<body>
+<center><FONT face="verdana,arial,helvetica" size="+1">rc.conf of cbsd jail</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<p>Each jail of cbsd has its own configuration file in $workdir/jails-rcconf, which is used for starting and stopping the jail.
+This page contains a summary of the default settings and description.
+<hr>
+<pre>
+jname="jail1";
+</pre>
+Immediately, the unique name of the jail. This is the name that can be seen on the <b>cbsd jls</b>  command or in the inventory list of nodes.
+This field can not be changed manually. If you want to change the name of the jail please use <b>cbsd jrename</b> command, because the name of the jail
+used in many other settings and on the file system directory naming
+<hr>
+<pre>
+path="/usr/jails/jails/jail1";
+</pre>
+Indicates the path that will be used as the root at the start of the jail. The above configuration is characteristic of jails
+who are setting baserw to 0 (no write access in base), ie, the base of which is mounted in read-only.
+In this case, the algorithm will work jstart follows:
+<br>
+<br>1) mount a base via nullfs specific version (see below) to  /usr/jails/jails/$jname directory
+<br>2) on the mounted base at $workdir/jails/jails/$jname mount directories related directly to the jail data (in the directory $workdir/jails-data/$jname), usually in write access
+<br>3) start jail with the root $workdir/jails/jails/$jname
+<br>
+<br>If baserw=1, then nullfs not use and the jail immediately starts with the directory $workdir/jails-data/$jname as root. In these cases, the path is usually seen as a
+<br>
+<br>path="/usr/jails/jails-data/jail1-data";
+<hr>
+<pre>
+host_hostname="jail1.my.domain";
+</pre>
+
+FQDN, the full name of the jail. This field can not be changed manually. If you want to change the name of the jail please use <b>cbsd jrename</b> command
+<hr>
+<pre>
+ip4_addr="10.0.0.5/24";
+</pre>
+
+IP address of the jail. If you plan to use multiple IP addresses, they are separated by commas:
+
+ip4_addr="10.0.0.5/24,192.168.0.2/30,54:04:a6:b2:11:c4/53";
+<hr>
+<pre>
+mount_devfs="1";
+</pre>
+
+Mount a devfs file system into the jail (directory /dev). Most services without this simply can not work.
+<hr>
+<pre>
+allow_mount="1";
+</pre>
+
+Allow users or services mount other file system inside the jail
+<hr>
+<pre>
+allow_devfs="0";
+</pre>
+
+Allow users or services mount devfs file system inside the jail
+<hr>
+<pre>
+allow_nullfs="0";
+</pre>
+
+Allow users or services mount nullfs file system inside the jail
+<hr>
+<pre>
+mount_fstab="/usr/jails/jails-fstab/fstab.jail1";
+</pre>
+
+The path to a file containing a list of directories or file systems to be mounted with the jail when it is run
+<hr>
+<pre>
+arch="amd64";
+</pre>
+
+Jail architecture (and respectively base from the $workdir/basejail)
+<hr>
+<pre>
+mkhostsfile="1";
+</pre>
+Whether correct in jail /etc/hosts entry 
+<br>$ip4_add $jname $jname.my.domain
+<br>
+in accordance with the IP address and the name (FQDN) of jail
+<hr>
+<pre>
+devfs_ruleset="4";
+</pre>
+a set of rules devfs, which will be applied to the devfs file system in the /dev of jail (list of rules in the file /etc/devfs.rules of master node)
+<hr>
+<pre>
+interface="auto";
+</pre>
+This recording controls the behavior of the automatic creation and deletion of IP addresses on the interface or use the previously established .
+<br>
+<br>The value <b>auto</b> means that cbsd will select the interface on which to create an IP address jail.
+<br>For example : there is a node with two interfaces . 
+<br>At the interface igb0 set IP subnet 10.0.0.2/24 and while the default gateway for the server is 10.0.0.1, in consequence of which igb0 a network card, through which the traffic by default. at the interface
+igb1 registered IP/subnet 192.168.0.1/24. 
+<br>If the jail in rc.conf ip4_addr takes value 192.168.0.{1-255}, then cbsd automatically selects 
+igb1 interface for IP jail. 
+<br>If none of the interface is not the subnet that contains the IP jail will be selected by default interface .
+<br>
+<br>Also, the value can be set to the name of the interface, if you do not want to search for a suitable interface. For example record
+<br>
+<br>interface = "igb0"
+<br>
+<br>sets the IP address of the jail at the interface igb0.
+<br>
+<br>As well as during start-up, when cbsd will sets the necessary IP for jail on interface, when you stop them cbsd unset IPs from the interface automatically. Therefore, be extremely careful -
+If you set by mistake IP address of the node for jail , then, during the cbsd jstop sequence, cbsd execute
+<br>
+<br>ifconfig <iface> <ip> -alias
+<br>
+<br>and a node will be lost in the network.
+<br>
+<br>To the stop of management IP address, the interface= param can be commented out or removed, or the value is left blank:
+<br>
+<br>interface=""
+<br>
+<br>In this case , cbsd will immediately start the jail with the appropriate IP, meaning that he has already been initialized . Such a situation may be necessary when
+server has only one IP address, and you plan to run jail ( or a few jails ) in one existing IP, but with the services within that do not conflict
+the ports.
+<br>For example, having one IP address , you can start jail with WEB server on port 80 , another jail with the mail server on port 25 and so on.
+<hr>
+<pre>
+ver="10.0";
+</pre>
+Version of the base for jail. Is directly related to the version of FreeBSD. Thus, if the jail are have in rc.conf options
+<br>
+<br>arch="amd64"
+<br>ver="10.0"
+<br>baserw=0
+<br>
+<br>then at the start of the jail ${workdir}/basejail/base_amd64_10.0 will be selected
+<br>
+<br>When
+<br>
+<br>arch="i386"
+<br>ver="9.1"
+<br>baserw=0
+<br>
+<br>it will accordingly be used ${workdir}/basejail/base_i386_9.1.
+<br>
+<br>This way you can switch the version of base from one version to another
+<br>
+<br>When baserw=1 means that the entire base has been initialized and is filled from ${workdir}/jails-data/$jname-data, so that these parameters do not matter
+<hr>
+<pre>
+basename="";
+</pre>
+The base name. You can create a customized base, for example to build a minimal environment and place it to
+<br>$workdir/base_lite_amd64_9.2
+<br>
+<br>To specify cbsd that you need to mount this directory, basename must have "lite" prefix:
+<br>
+<br>basename="lite";
+<hr>
+<pre>
+baserw="0";
+</pre>
+When 1, it is understood that a jail has its own base file system and has an entry.
+<br>Typically, this parameter is set during the creation of the jail. If you originally created the jail with baserw=0 (readonly), but want to
+switch it into a baserw=1 mode, you first need to copy all the files from the base directory to $workdir/jails-data/$jname-data. For example:
+<br>
+<br>cd /usr/jails/basejail/base_amd64_10/
+<br>pax -p eme -X -rw . /usr/jails/jails-data/jail1-data
+<br>
+<br>or, if you have in the master node object files:
+<br>make -C /usr/src installworld DESTDIR="/usr/jails/jails-data/jail1-data"
+<br>
+<br>In the same way, at this stage, it is supposed to update the jail that operate in baserw=1, since each cell has a personal copy of the base.
+<br>In contrast, when using baserw=0, you can only use one copy of the base, which is mounted through nullfs in read-only to all jails.
+<br>You can have one base (eg the minimum amount called lite) for a few tens of jails which is placed on md-ramfs to accelerate the operation of the basic tools in the jails.
+<br>
+<br>In addition, with baserw=0 you have the opportunity to update the version of the base less.
+<br>
+<br>In addition, the base is mounted in read-only mode gives you extra security if your jail hacked and somebody try to modify the file system - this is simply will not work.
+<hr>
+<pre>
+mount_src="0";
+</pre>
+Does the mount /usr/src directory of jail FreeBSD source code in read-only, if they have
+<hr>
+<pre>
+mount_obj="";
+</pre>
+Does the mount /usr/obj directory of jail FreeBSD source code in read-only, if they have
+<hr>
+<pre>
+mount_kernel="0";
+</pre>
+Does the mount /boot/kernel kernel FreeBSD. This can be useful, for example, for CTF-information required to operate DTRACE.
+<hr>
+<pre>
+mount_ports="1";
+</pre>
+Does the mount /usr/ports of the master node in readonly to /usr/ports in jail. 
+<br>You can have one copy of ports tree on the master node that is deployed in /usr/ports, and which mount to all jails.
+<br>In order to simultaneously compilation of the same port are not conflicted in two or more jails,  in the /etc/make.conf option WRKDIRPREFIX must be sets to for alternate location, such as /tmp (if the jail
+has applytpl=1 settings, this is done automatically)
+<hr>
+<pre>
+astart="1";
+</pre>
+Whether to start jail automatically when nodes is started. If astart=0, the jail does not run itself on booted node.
+<hr>
+<pre>
+vnet="0";
+</pre>
+<hr>
+<pre>
+applytpl="1";
+</pre>
+Whether to apply some modification in the jail configuration: sets pkg.conf, make entries in the /etc/hosts, and so on.
+<hr>
+<pre>
+mdsize="0";
+</pre>
+<hr>
+<pre>
+rcconf="/usr/jails/jails-rcconf/rc.conf_jail1";
+</pre>
+<hr>
+<pre>
+floatresolv="1";
+</pre>
+Automatically correct the /etc/resolv.conf, automatically assigning as the primary nameserver caching named in the master node, the other nameserver - from inventory of nodes.
+<hr>
+<pre>
+exec_start="/bin/sh /etc/rc";
+</pre>
+<hr>
+<pre>
+exec_stop="/bin/sh /etc/rc.shutdown";
+</pre>
+<hr>
+<pre>
+exec_poststart="";
+</pre>
+Execute the command inside the cell jail its launch. You can have multiple scripts are numbered options:
+<br>
+<br>exec_poststart0="date > /tmp/start1.txt";
+<br>exec_poststart1="date > /tmp/start2.txt";
+<br>..
+<hr>
+<pre>
+exec_poststop="";
+</pre>
+Execute the command inside the jail after a stop. You can have multiple scripts are numbered options:
+<br>
+<br>exec_poststop0="date > /tmp/stop1.txt";
+<br>exec_poststop1="date > /tmp/stop2.txt";
+<br>..
+<hr>
+<pre>
+exec_prestart="";
+</pre>
+Execute the command inside the jail before its launch. You can have multiple scripts are numbered options:
+<br>
+<br>exec_prestart0="date > /tmp/prestart1.txt";
+<br>exec_prestart1="date > /tmp/prestart2.txt";
+<br>..
+<hr>
+<pre>
+exec_prestop="";
+</pre>
+Execute the command inside the jail before stop it. You can have multiple scripts are numbered options:
+<br>
+<br>exec_prestop0="date > /tmp/prestop1.txt";
+<br>exec_prestop1="date > /tmp/prestop2.txt";
+<br>..
+<hr>
+<pre>
+exec_master_poststart="";
+</pre>
+A similar behavior exec_poststart, except that the command is executed in the master system (be careful, its not secure)
+<hr>
+<pre>
+exec_master_poststop="";
+</pre>
+A similar behavior exec_poststop, except that the command is executed in the master system (be careful, its not secure)
+<hr>
+<pre>
+exec_master_prestart="";
+</pre>
+A similar behavior exec_prestart, except that the command is executed in the master system (be careful, its not secure)
+<hr>
+<pre>
+exec_master_prestop="";
+</pre>
+A similar behavior exec_prestop, except that the command is executed in the master system (be careful, its not secure)
+</body>
+</html>
