@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">Сборка своих репозиториев ПО для FreeBSD через cbsd cpr</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<p>
+Автор: <b>olevole</b>
+<br>
+Теги: <b>howto</b>
+</p>
+//Draft, unformatted
+<br>
+<p>
+<h2>Общая информация</h2>
+Одна из бесконечных задач системных инженеров заключается в работе по установке и поддержанию в актуальном состоянии программного обеспечения серверов и рабочих станций. 
+<br><br>
+Также, в целях безопасности и надежности, желательно иметь сборки на своих ресурсах, а не публичных серверах. Даже официальные репозитории подвержены различным
+инцидентам и взломам, в результате которых вы можете оказаться в ситуации, когда ПО срочно нужно, а репозиторий который вы не контроллируете - недоступен.
+<br><br>
+Помимо этого, сам процесс обновления должен подразумевать возможность отката на предыдущее состояние, если по каким-то причинам новые версии работают некорректно. 
+<br>
+Хорошо, когда для решения этой задачи используется резервное копирование или, что гораздо практичнее, использовать снэпшот файловой системы: 
+например, перед работами сделать <b>ZFS snapshot</b> для клетки, и при любых проблемах после обновления в течении секунды вернуть состояние обратно.
+<br><br>
+Однако, занимаясь работой по построению инфраструктуры для собственного репозитория, вы можете заложить возможность версионности на уровне репозитория, что 
+при комбинировании с подстраховкой на клиенте сводит риск попасть в неблагоприятное положение на нет.
+<br><br>
+Когда я начинал писать <b>cbsd cpr</b>, уже давно были известны аналогичные функционалы в виде <b>TinderBox</b> и <b>Poudriere</b>, однако в каждом из
+этих решений мне чего-то не хватало.
+<br><br>
+Требования, которые предьявляла моя задача:
+<br><br>
+<li>Сборка производится по заранее сгенерированныму списку ПО.
+<br>
+<li>Сборка каждого отдельного репозитория/версии производится в изолированном окружении (включая собственный кеш <b>ccache</b> (опционально) для компиляции, который накапливается при каждых повторных сборках в пределах версии и ветки);
+<br>
+<li>При сборке окружения, используется база и ядро, используемые cbsd, соответственно, при необходимости иметь более свежую версию базы или ядра, можно воспользоваться <b>cbsd repo</b> для получения объектов из репозитория, или <b>cbsd csup/buildworld/kernel*</b> для сборки с нуля.
+<br>
+<li>Каждый набор ПО (или один и тот же список) может использовать свою собственную <b>версию опций портов</b> (/var/db/ports) и персональный <b>make.conf</b> файл и иметь именованный репозиторий, 
+например в таком виде:
+<br><br>
+<b>nox</b> - WITHOUT_X11, набор ПО для серверного окружения, без поддержки X - этот набор ПО используется на production-серверах.
+<br>
+<b>devnox</b> - тот же набор ПО и опция WITHOUT_X11, но софт собран с дебагом и поддержкой DTRACE; этот набор ПО используется на dev-клетках, где идет разработка и профилирование проектов.
+<br>
+<b>xorg</b> - X11-based GUI приложения. Данный набор содержит xorg, kde, gnome, мультимедия, офисные приложения, IDE для разработки и прочий инструментарий, характерный для рабочих станций.
+<br>
+<br>
+<li>Иметь возможность использовать больше одного билдера ПО, в этом случае сценарии репозитория и опции портов реплицировалась (например через csync2) на соответствующие билдеры: если в процессе сборки репозитория <b>nox</b> вы
+выбрали некоторые опции для одного порта, то собирая тот же репозиторий <b>nox</b> на другом сервере или другой версии, вывода окна со списом опций уже не будет - он синхронизируется с сервера, которая прошла этот путь первой.
+<br>
+<li>Иметь возможность задействовать для компиляции свободные ресурсы серверов через distcc. В этом случае, на нужных серверах скачивалась и запускалась клетка <b>distcc</b> с минимальным <b>nice</b>, что при сборке не мешало работать остальным сервисам.
+<br>
+<li>Иметь версионность каталогов, куда сохраняются новые сборки. В один момент времени только один сет является активным, переключение происходит сменой симлинка.
+Кроме этого, при наличии нескольких <b>download</b> серверов, требуется время для полной синхронизации, поэтому проливка осуществляется в неактивную (slave) зону и по факту полной сихронизации, одномоментно переключается.
+<li>Конечные хосты забирают готовые пекеджи не с билдеров, а с соответствующих <b>downloads</b>-серверов, которых может быть несколько. Таким образом, сервера отдающие пекеджи, не зависят от здоровья самих билдеров.
+<br>
+<br>Протоколирование работы скрипта ведется в /tmp каталоге chroot окружения:
+<br>
+<br>    - build.log - общий лог процесса сборки
+<br>
+<br>    - packages.log - лог на этапе pkg create
+<br>
+<br>    - port_log* - временные файлы лога компиляции индивидуального порта, удаляющиеся автоматически при успешной сборке порта
+<br><br>
+<li>Каждая версия репозитория может иметь свой собственный E-mail для уведомлений о начале-конце сборки.
+<br><br>
+<li>Каждую сборку можно запустить с параметром <b>pause=1</b>, что по окончанию сборки система будет ожидать нажатия клавиши. А пока это не сделано - можно зайти в chroot окружение, просмотреть проблемы и исправить их вручную.
+<br>
+<br><li>Каждый билдер может быть на своей <b>Major</b> веткии и архитектуры и специализироваться на сборках только для текущей Major ветки и архитектуры для минимизации <b>cross-{build,version}</b> проблем (cbsd cpr скрипт позволяет через ver=X.Y тем не менее собирать фиксированную версию)
+<br><br>
+<li>порты монтируются в chroot окружение из мастер системы, либо каждое окружение имеет свою копию портов.
+<br><br>
+<b>Схематичный рисунок сборочной фермы:</b>
+<br>
+<img src="/html/img/bldfarm.png"></img>
+<br><br>
+Для комфортной работы напишем переключатель версионности каталогов.
+<br><br>
+Принцип работы данного скрипта простая. Допустим, у нас есть локация <b>/home/web/pkg.bsdstore.ru/</b> для хранения пекеджей, где:
+<br><br><b>/home/web/pkg.bsdstore.ru/master</b>  - это SymbolicLink на активный set с билдами. Этот же путь является Docroot для WEB сервера и его имя никогда не меняется.
+<br><br><b>/home/web/pkg.bsdstore.ru/1</b> - первый физический каталог, содержащий один набор данных
+<br><br><b>/home/web/pkg.bsdstore.ru/2</b> - второй физический каталог, содержащий предыдущую (или следующую) версию набора данных
+<br><br>
+симлинк master будет указывать лишь на какой-то конкретный каталог, при каждом запуске скрипта указывая по кругу на следующий.
+<br>
+<pre>
+#!/bin/sh
+# When use with config file, follow variable must be set, sample:
+# _PATH="/usr/symlinks"
+# _RANGE="1 2 3"
+# _MASTER_LINK="master"
+# _SLAVE_LINK="slave"
+# _ACTION="next"
+# _X=1  #if action=set
+# _Y=2  #if action=set
+#
+# or by command line:
+# ./symlink_changer -p /usr/symlinks -r "1 2 3" -m master -s slave -a next
+#
+
+err() {
+    exitval=$1
+    shift
+    echo "$*" 1>&2
+    exit $exitval
+}
+
+get_symlink() {
+    local _res
+
+    [ -z $1 ] && return 1
+    _res=`readlink ${_PATH}/${1}`
+    [ $? -ne 0 ] && return 1
+    printf `basename ${_res}`
+}
+
+get_next() {
+    local _cur _test _first _count
+
+    _test="${_PATH}/${1}"
+    _cur=0
+    _count=0
+
+    for i in ${_RANGE}; do
+        [ ${_count} -eq 0 ] && _first=${i}  ## store first element
+        [ ${_cur} -eq 1 ] && printf ${i} && return 0
+        [ "${_PATH}/$i" = "${_test}" ] && _cur=1
+        _count=$(( _count + 1 ))
+    done
+
+    printf ${_first}
+}
+
+get_prev() {
+    local _cur _test _first _count _REVSLOTS
+    _test="${_PATH}/${1}"
+    _cur=0
+    _count=0
+    _REVSLOTS=`echo ${_RANGE} | tr " " "\n" |sort -r`
+
+    for i in ${_REVSLOTS}; do
+        [ ${_count} -eq 0 ] && _first=${i}  ## store first element
+        [ ${_cur} -eq 1 ] && printf ${i} && return 0
+        [ "${_PATH}/$i" = "${_test}" ] && _cur=1
+        _count=$(( _count + 1 ))
+    done
+
+    printf ${_first}
+}
+# create or change new layout by
+# $1 - new dir for master link
+# $2 - new dir for slave
+sym_action() {
+    local _masterdir _slavedir
+    [ -z "${1}" -o -z "${2}" ] && return 1
+
+    _masterdir="${_PATH}/${1}"
+    _slavedir="${_PATH}/${2}"
+
+    [ ! -d "${_masterdir}" ] && mkdir "${_masterdir}"
+    [ ! -d "${_slavedir}" ] && mkdir "${_slavedir}"
+
+    # ln -sf not work correctly here - create symlink in old master folder
+    cd ${_PATH}
+    rm -f "${_PATH}/${_MASTER_LINK}" && /bin/ln -s "${1}" "${_MASTER_LINK}"
+    rm -f "${_PATH}/${_SLAVE_LINK}" && /bin/ln -s "${2}" "${_SLAVE_LINK}"
+}
+
+usage() {
+    echo "$0 -c confpath -p path -r \"range\" -m masterlink_name -s slavelink_name -a action [-x dir1] [-y dir2]"
+    echo "action must be: next, prev, set"
+    echo "when action = set, x/y = is new masterdir/slavedir"
+    exit
+}
+
+
+# MAIN()
+while getopts "c:p:r:m:s:a:x:y:" opt; do
+        case "$opt" in
+        c) _conf="$OPTARG" ;;
+        p) _path="$OPTARG" ;;
+        r) _range="$OPTARG" ;;
+        m) _master_link="$OPTARG" ;;
+        s) _slave_link="$OPTARG" ;;
+        a) _action="$OPTARG" ;;
+        x) _x="$OPTARG" ;;
+        y) _y="$OPTARG" ;;
+        *) usage ;;
+        esac
+        shift $(($OPTIND - 1))
+done
+
+[ -n "${_conf}" -a -f "${_conf}" ] && . ${_conf}
+
+[ -n "${_path}" ] && _PATH=${_path}
+[ -n "${_range}" ] && _RANGE=${_range}
+[ -n "${_master_link}" ] && _MASTER_LINK=${_master_link}
+[ -n "${_slave_link}" ] && _SLAVE_LINK=${_slave_link}
+[ -n "${_action}" ] && _ACTION=${_action}
+[ -n "${_x}" ] && _X=${_x}
+[ -n "${_y}" ] && _Y=${_y}
+
+[ -z "${_ACTION}" ] && err 1 "Give me action"
+[ -z "${_PATH}" -o -z "${_MASTER_LINK}" -o -z "${_SLAVE_LINK}" -o -z "${_RANGE}" ] && err 1 "not all neccesary variable has been set"
+cd ${_PATH} || err 1 "Cant cwd to ${_PATH}"
+
+# init area
+_curmaster=`eval get_symlink ${_MASTER_LINK}`
+_curslave=`eval get_symlink ${_SLAVE_LINK}`
+
+case "${_ACTION}" in
+"next")
+        _master=`eval get_next ${_curmaster}`
+        _slave=`eval get_next ${_master}`
+        ;;
+"prev")
+        _master=`eval get_prev ${_curmaster}`
+        _slave=${_curmaster}
+        ;;
+"set")
+        _master="${_X}"
+        _slave="${_Y}"
+        ;;
+*)
+        err 1 "No action set"
+        ;;
+esac
+
+sym_action ${_master} ${_slave}
+</pre>
+
+...<br>
+<b>WIP</b><i>(Work in progress)</i>
