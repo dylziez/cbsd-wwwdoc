@@ -11,6 +11,7 @@
 <!--# include file="/html/cbsdmenu_en.html" -->
 <body>
 <!--# include file="/html/translate_en.html" -->
+<!--# include file="/html/currentver_en.html" -->
 <center><FONT face="verdana,arial,helvetica" size="+1">Installing cbsd</font></center>
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br>
@@ -31,7 +32,7 @@ Version 9.2.0 means that scripts were written for FreeBSD 9.2. The third number 
 
 <h3><ins>Installation and preparation cbsd</ins><a href="#cbsd-preparing"></a></h3>
 
-1)<br>
+1) Installing<br>
 <p>a) cbsd can be install via FreeBSD ports tree:</p>
 <b>
 <pre>
@@ -55,17 +56,17 @@ or <br>
     % make -C /usr/ports/devel/git install
 </pre>
 </b>
-get the latest version of cbsd from github:
+get the latest version of <b>cbsd</b> from <a href="https://github.com/">github</a>:
 <pre>
 % git clone https://github.com/olevole/cbsd.git /usr/local/cbsd
 </pre>
-2)<br>
+2) First run<br>
 <p>In classical installation, cbsd contains in two copies. One of them (<i>/usr/local/cbsd</i>), contains a distribution kit, an initial code and configuration files by default. 
 Also, this copy can be used for management of jails in case the main copy is damaged (for example was incorrectly updated). 
 The index of with what catalog of scripts to work is the environment variable <i>workdir</i>.</p>
 <p>For initialization of a working (main) copy of cbsd, use <strong>initenv</strong> command, with which start in the first call it is necessary to specify through an environment variable
- <i>workdir</i> the place of the working catalog and also to answer a number of questions. </p>
-3) Initialization with the working catalog into <i>/usr/jails</i>:</p>
+<i>workdir</i> the location of the working directory, and answer a series of questions. The file system for <b>cbsd</b> (or rather, the directory <b>jails-data</b>in it) should be sufficient to accommodate the jail data
+3) Initialization with the working catalog into <i>/usr/jails</i>:
 <b>
 <pre>
 % env workdir="/usr/jails" /usr/local/cbsd/sudoexec/initenv
@@ -98,11 +99,6 @@ named_enable="YES"
 then execute: 
 <pre>service named start
 </pre>
- <b>
-<pre>
-service named start
-</pre>
-</b>
 <li><strong>Please fill nodeippool</strong> - The list of subnets in which it is permitted to be started the jails. If networks more then one - use spacel as delimer. For example: 10.0.0.0/24 192.168.1.128/29
 <li><strong>Please fill natip</strong> - Here it is necessary to enter the IP address which will represent itself as NAT for private addresses. Usually it is IP of your node. For example: 192.168.1.2
 <li><strong>Please fill fbsdrepo</strong> - Whether to use an official repository of FreeBSD for base/templates. The answer 1 or 2 is expected. If on officidal FreeBSD servers  base it is not revealed - cbsd repository is used. 
@@ -112,10 +108,9 @@ For example: 1.
 <li><strong>Configure NAT for RFC1918 Network?</strong> - Whether to use network address translation (NAT) for private addresses? When jails are created in RFC1918 networks, it is necessary to enable for internet access. For example: 1.
 <li><strong>Which one NAT framework should be use: [pf or ipfw]</strong>- What tool for NAT to prefer. Recommended - pf. For example: 1
 <br><br>
-<b>Warning:</b> all settings stored in the file <b>$workdir/nc.inventory</b> also can be changed in any favorite editor.
-If you want to initiate a dialogue with the initial configuration again, simply delete this file.
+<b>Warning:</b> Later on, these settings can be changed via the command <b>cbsd initenv-tui</b>, or in a file <i>${workdir}/var/db/local.sqlite</i>, which is a SQLite3 database.
 <br>
 <p style="color:RED">Attention! During the first installation, the system create user named <b>cbsd</b> with access to the shell through which cbsd's remote nodes will communicate via ssh. 
-Please take the choice of complex password with the maximum attention. After first <b>cbsd initenv</b> the password can be changed via the standard command <b> passwd cbsd</b></p>
+Please take the choice of complex password with the maximum attention. After first <b>cbsd initenv</b> the password can be changed via the standard command <b>passwd cbsd</b></p>
 </body>
 </html>

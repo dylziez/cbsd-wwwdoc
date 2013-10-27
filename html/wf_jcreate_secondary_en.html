@@ -1,0 +1,80 @@
+<b>command</b>:<br>
+<pre>
+% cbsd jconstruct
+</pre>
+<pre>
+% cbsd jcreate jconf=/path/to/conf.jconf
+</pre>
+
+<b>description</b>:
+<br><br>
+If DIALOG-based script jconstruct-tui for some reason did not come for create configuration of the new jails, you can use the script, dialogue like "question and answer" <b>jconstruct</b>
+
+<pre>
+   % cbsd jconstruct
+</pre>
+<br>
+Which specifies the same question as the tui-version.
+<br>
+Also, the configuration can avoid the formation without additional interactive utilities, for example
+building systems that automatically create the necessary jails.
+<br><br>
+Example of a standard configuration for <b>jcreate</b> might look like:
+
+<pre>
+jname="jail1";
+path="/usr/jails/jails/jail1";
+host_hostname="jail1.my.domain";
+ip4_addr="10.0.0.24/24";
+mount_devfs="1";
+allow_mount="1";
+allow_devfs="0";
+allow_nullfs="0";
+mount_fstab="/usr/jails/jails-fstab/fstab.jail1";
+arch="amd64";
+mkhostsfile="1";
+devfs_ruleset="4";
+ver="10";
+basename="";
+slavenode="0";
+baserw="0";
+basename="";
+mount_src="0";
+mount_obj="";
+mount_kernel="0";
+mount_ports="1";
+astart="1";
+data="/usr/jails/jails-data/jail1-data";
+vnet="0";
+applytpl="1";
+mdsize="0";
+rcconf="/usr/jails/jails-rcconf/rc.conf_jail1";
+floatresolv="1";
+exec_start="/bin/sh /etc/rc";
+exec_stop="/bin/sh /etc/rc.shutdown";
+
+exec_poststart="0";
+exec_poststop="0";
+exec_prestart="0";
+exec_prestop="0";
+
+exec_master_poststart="0";
+exec_master_poststop="0";
+exec_master_prestart="0";
+exec_master_prestop="0";
+interface="auto";
+</pre>
+
+If you want to create jail with installed some packages from <b>pkg</b> repository, in this configuration must have an <b>pkglist</b> pointing to a file with a list of packages, for example:
+<pre>
+pkglist="/tmp/newjail.txt";
+</pre>
+The /tmp/newjail.txt file might look like:
+<pre>
+mc
+lynx
+nginx-devel
+lsof
+</pre>
+<i>Warning</i>: <b>cbsd jcreate</b> remove file pointed by <b>pkglist</b> variables after jail create
+</p>

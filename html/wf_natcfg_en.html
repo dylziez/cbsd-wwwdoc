@@ -14,24 +14,18 @@ cbsd functional has a configuration template NAT rules for translating of privat
 </p>
 To do this, this command as the first step is required:
 <br>
-<pre>cbsd natcfg</pre>
+<pre>
+    % cbsd natcfg
+</pre>
 for selecting the appropriate framework for which the configuration will be loaded NAT: pf, ipfw and ipnat.
 <br>
 <p>
 <b>Attention!</b> When you configure this, system file <b>/boot/loader.conf</b> nodes will be modified to load the appropriate modules.
 <br>
 <br>
-Choice framework also stored in the file <i><b>$workdir/nc.inventory</b></i> as a record:
-<pre>
-nat_enable="name_of_framework"
-</pre>
-</p>
-<p>IP, which will be used as source address, is requested when you first start <b>cbsd initenv</b> and stored in a file <i><b>$workdir/nc.inventory</b></i>, 
-in the form of <b>natip="IP"</b>, where it can be changed later.</p>
-<p>
-To modified <b>natip</b> take effect, you must run <b>cbsd natcfg</b> and <b>cbsd naton</b> again.
-</p>
-<op>
+Selection framework and IP for NAT alias executed when you first start <b>cbsd initenv</b>, can later be reconfigured 
+through <b>cbsd initenv-tui</b> To natip changed in force, you must run <b>cbsd natcfg</b> and <b>cbsd naton</b> again.
+<br><br>
 Currently, the cbsd configuration NAT limited to the creation of rules for translating private networks. 
 If you need to get something more from simple NAT rule, you can edit the rules file created manually in the directory
 <i><b>$workdir/etc/</b></i>
@@ -50,6 +44,6 @@ If <b>nodeip</b> (IP of nodes), he is within RFC1918 networks for the subnet bro
 </p>
 <p>To disable nat control by <b>cbsd</b>, use the follow command:
 <pre>
-cbsd natoff
+    % cbsd natoff
 </pre>
 </p>

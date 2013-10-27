@@ -8,13 +8,13 @@
 
 <b>Description</b>:
 <br><br>
-Carries out jail cloning in the new. As obligatory arguments, the jail source/original is specified through<b>old</b>, new name via <b>new</b> arguments and FQDN (hostname) via <b>fqdn</b>.
+Carries out jail cloning in the new. As obligatory arguments, the jail source/original is specified through <b>old</b>, new name via <b>new</b> arguments and FQDN (hostname) via <b>host_hostname</b>.
 As the unessential - new ip of the address via <b>ip4_addr</b> (if several IPs, addresses separated by commas with no spaces)
 <br><br>
-<b>Example</b> (cloning jail amp123 to amp123clone with <b>ip</b> and <b>fqdn</b> changes):
+<b>Example:</b> cloning jail jail2 to jail3 with changes ip address <b>ip4_addr</b> and name of hosts <b>host_hostname:
 <br>
 <pre>
-% cbsd jclone old=amp123 new=amp123clone fqdn=amp123clone.my.domain ip4_addr=10.0.0.200/24
+    % cbsd jclone old=jail2 new=jail3 host_hostname=jail3.my.domain ip4_addr=10.0.0.22/24
 </pre>
 <br><br><center>
 <img src="/html/img/jclone1.png"></img>

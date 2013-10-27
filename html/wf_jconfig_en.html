@@ -1,17 +1,18 @@
 <b>Commands</b>:<br>
 <pre>
-% cbsd jconfig jname=jail1
+% cbsd jconfig
+% cbsd jset 
 </pre>
 
-<b>Descriptions</b>:
-configuration parameters jail
-<br><p> Each cell has its own rc.conf file in <i><b>$workdir/jails-rcconf/</b></i>, own the fstab file for a list of mounted file systems in the directory<i><b>$workdir/jails-fstab/</b></i> and 
-its own directory to store the statistics, descriptions of jails, configuration wizards and other supporting files in a directory <i><b>$workdir/jails-system/</b></i></p>
-</p>
-In the TUI-dialog can be brought, not all possible configuration options jails, in which case they can be corrected in the corresponding files via any text editor when jail is stopped
+<b>Descriptions</b>: configuration parameters jail
 <br>
+<p>
+Each cbsd jail stores the settings in SQLite3 database.
+In addition, <i>$workdir/jails-fstab/</i> may have fstab files (see below). 
+To change the settings of jail can serve <b>cbsd jconfig</b> command, which is runs the TUI menu to change basic settings:
+</p>
 <h3>Jails IP address</h3>
-IP addresses that are bound to the jail sets in <i><b>$workdir/jails-rcconf/</b>rc.conf_name</i> file in the parameter <b>ip4_addr</b>.
+IP addresses that are bound to the jail sets in <b>ip4_addr</b> parameter.
 As an IP may serve as IPv4, and the IPv6 address. When starting and stopping jail, working with IP may take place in two modes -
 automatic on-the-fly creation of IP addresses for the jail at the time of launch + automatic removal from the interface IP when stopping or
 the use of previously initialized IP addresses.
@@ -19,11 +20,9 @@ the use of previously initialized IP addresses.
 When for jails assigned to more than one address, they should be listed separated by commas without spaces. IP can include network prefix specified
 through IP/<b>prefix</b>. By default, aliases created with the prefix /32, that may not be appropriate if the jail uses a separate subnet from the network server - in
 this case, the correct <b>/prefix </b> is needed.
-
 <p>
-The parameter that controls this behavior stored in <i><b>$workdir/jails-rcconf/</b>rc.conf_name</i> file
-and called <b>interface</b>. If it is not in <b>rc.conf</b>-file or the value is 0, jstart and jstop will not be called
-ifconfig alias and ifconfig -alias, respectively. If its value is 1, before jail start, this command will be executed:
+The parameter that controls this behavior pointed by <b>interface</b> parameter. When <b>interface=0</b>, jstart and jstop will not be called
+ifconfig alias and ifconfig -alias, respectively. If its value is <b>auto</b> or name of network nics, this command will be executed:
 <pre>
 ifconfig <i>alias</i> <b>interface</b> <b>ips</b>,
 </pre>
@@ -31,37 +30,56 @@ and when jail stop:
 <pre>
 ifconfig <b>inteface</b> <b>ips</b> <i>-alias</i>
 </pre>
-Be careful with this option, if you have only one IP for server that is used and this IP is assigned to the same jail:
-when stopping jail, ip address of the server will be removed automatically that will make the server unavailable. In this case, you need to use in jail rc.conf:
-
-interface=0
-
-or just remove "interface" parameters from jail rc.conf.
-
-An example of a piece of configuration to create three IP addresses at the start of the jail:
+Be careful with this option, if you have only one IP for server that is used and this IP is assigned to the same jail,
+when stopping jail, ip address of the server will be removed automatically that will make the server unavailable. In this case, you need to use:
 <pre>
-..
-interface=1
-ip4_addr="176.9.147.18/29,2a01:4f8:160:3002::1/64,192.168.0.2/24"
-..
+interface=0
+</pre>
+For example, to run the configuration tool for the <b>jail1</b>, run:
+<pre>
+cbsd jconfig jname=jail1
 </pre>
 
 <h3>Mounting File Systems in jail</h3>
 
-Each jail has own fstab file, which lists the file systems that are mounted in a jail at startup. This file is located in the file
-<i><b>$workdir/jails-fstab/</b>fstab.name</i> and coincides with the syntax of the file system format <b>/etc/fstab</b> with the exception that, as the mount point indicated
-path relative to the jail root, not the master system. For example, if you want to jail1, which is located at
+Each jail can have your fstab file, which lists the file systems that are mounted jail is startup.
+System records (they are managed by cbsd and edit this file inappropriately) are located in the file <i><b>$workdir/jails-fstab/</b>fstab.name</i> and the same syntax to format the file system <b>/etc/fstab</b> with the exception
+that as a mount point is the path relative to the root jail, not the master system.
 <br>
-/usr/jails/jails/jail1 
-<br>
-on the master host, mount tmpfs for /tmp jail dir  (those actually in /usr/jails/jails/jail1/tmp from master filesystem), then the entry in the
-<i><b>$workdir/jails-fstab/</b>fstab.jail1</i> should look like this:
+For user entries, you can use the file in the same directory with the extension <i>.local</i>. For example, if you want to make between <b>jail1</b> and <b>jail2</b> a shared directory (via nullfs), which
+physically located in the master node (e.g.: <i>/usr/home/sharefs</i>), the files <i><b>$workdir/jails-fstab/</b>fstab.jail1.local</i> and <i><b>$workdir/jails-fstab/</b> fstab.jail2.local</i> should have:
 <pre>
-..
-tmpfs /tmp tmpfs rw 0 0
-..
+/usr/home/sharefs /usr/home/sharefs nullfs rw 0 0
 </pre>
-
-
+If you want to mount tmpfs to /tmp dir in jail1 (those actually in /usr/jails/jails/jail1/tmp), then the entry in the
+<i><b>$workdir/jails-fstab/</b>fstab.jail1.local</i> should have:
+<pre>
+tmpfs /tmp tmpfs rw 0 0
+</pre>
+If you want to mount into <b>jail2</b> a directory from <b>jail1</b>, jail1 path should point to the directory containing the data jail1 (and their mount points ${workdir}/jails/jail1). For example entry
+<i><b>$workdir/jails-fstab/</b>fstab.jail2.local</i>:
+<pre>
+/usr/jails/jails-data/jail1-data/usr/local/www /usr/local/www nullfs ro 0 0
+</pre>
+Make the shared directory /usr/local/www between jail1 and jail2, but it will jail2 in read-only mode
 <br>
-//to be continued
+<h3>Change settings via the jset</h3>
+Another possibility is to change certain parameters of the jail - use the command <b>cbsd jset</b>
+Full list of possible arguments can be accessed through <i>--help</i>:
+<pre>
+     % cbsd jget --help
+</pre>
+For example, to change ip of jail1:
+<pre>
+    % cbsd jset jname=jail1 ip4_addr="10.0.0.20/24,192.168.0.20/24" 
+</pre>
+<br><br><center>
+<i>cbsd jconfig jname=jail2</i>
+<br>
+<img src="/html/img/jconfig1.png"></img>
+<br><br>
+<i>cbsd jset</i>
+<br>
+<img src="/html/img/jconfig2.png"></img>
+<br><br>
+</center>

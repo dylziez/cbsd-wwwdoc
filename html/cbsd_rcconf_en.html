@@ -11,11 +11,12 @@
 <!--# include file="/html/cbsdmenu_en.html" -->
 <!--# include file="/html/translate_en.html" -->
 <body>
-<center><FONT face="verdana,arial,helvetica" size="+1">rc.conf of cbsd jail</font></center>
+<!--# include file="/html/currentver_en.html" -->
+<center><FONT face="verdana,arial,helvetica" size="+1">jail settings</font></center>
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br>
 <body>
-<p>Each jail of cbsd has its own configuration file in $workdir/jails-rcconf, which is used for starting and stopping the jail.
+<p>Each jail of cbsd has its own settings which is used for starting and stopping the jail.
 This page contains a summary of the default settings and description.
 <hr>
 <pre>
@@ -52,7 +53,7 @@ ip4_addr="10.0.0.5/24";
 
 IP address of the jail. If you plan to use multiple IP addresses, they are separated by commas:
 
-ip4_addr="10.0.0.5/24,192.168.0.2/30,54:04:a6:b2:11:c4/53";
+ip4_addr="10.0.0.5/24,192.168.0.2/30,54:04:a6:b2:11:c4/64";
 <hr>
 <pre>
 mount_devfs="1";

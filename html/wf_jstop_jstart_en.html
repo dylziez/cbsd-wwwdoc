@@ -7,13 +7,14 @@
 % cbsd jstop jail1 jail2 ... jailX
 
 % cbsd jrestart
+% cbsd jorder
 </pre>
 
 <b>Description</b>:
 <br>
-<p>Running jails occurs at startup cbsd/server automatically if parameter <b>astart</b> in the corresponding jail file
-<i><b>$workdir/jails-rcconf/</b>rc.conf_name</i> set to 1.
-When you stop the server or service <b>cbsd</b>, all running jails will be stopped automatically.
+<p>Running jails occurs at startup cbsd/server automatically if parameter <b>astart</b> (auto-start) corresponding jail 
+set to 1. You can change this setting through <b>cbsd jconfig</b>.
+When you stop the server or service <b>cbsdd</b>, all running jails will be stopped automatically.
 </p>
 <p>Starting the jail manually by the command:
 <pre>
@@ -29,15 +30,15 @@ or
 or
 
 <pre>
- cbsd jstart jail1 jail2 jail2 ..
+ cbsd jstart jail1 jail2 jail3 ..
 </pre>
 (to launch multiple jails by one command)
 </p>
-<p>When <b>parallel=0</b> is set in <i><b>$workdir/</b>nc.inventory</i> and you try to launch/stoping a few jails, start/stop will be held consecutively.
+<p>When ( You can change this behavior in cbsd initenv-tui ) <b>parallel=0</b> and you try to launch/stoping a few jails, start/stop will be held consecutively.
 It is not always good, as any error triggered inside jails in the rc-scripts, which leads to a pause, can block start/stop next jails.
 <p>
 In the case when <b>parallel</b> have a non-zero value, each next jails will be launched/stopped in N seconds after the previous one, where N - <b>parallel</b> value.
-When on this timeout previous jails does not have time to run/stop completely, the next jails will be executed in parallel.
+After this timeout, no matter whether the previous jail o start fully and next jail will be started.
 </p>
 <br>
 <p>
@@ -55,7 +56,7 @@ or
 or
 
 <pre>
- cbsd jstop jail1 jail2 jail2 ..
+ cbsd jstop jail1 jail2 jail3 ..
 </pre>
 (to stopping multiple jails by one command)
 </p>
@@ -68,9 +69,15 @@ In this regard, the process <b>init(8)</b> can interrupt the rc-scripts on this 
 nonconservation or damage data. To avoid this, <b>/etc/rc.conf</b> master system should be adjusted parameter <b>rcshutdown_timeout</b> to a more reasonable value (default: 90 seconds)
 </p>
 <p>
-In the absence of <b>rcshutdown_timeout</b> in the system <b>/etc/rc.conf</b>, <b>cbsd initenv</b> will put this option in its sole discretion automatically.
+In the absence of <b>rcshutdown_timeout</b> in the system <b>/etc/rc.conf</b>, <b>cbsd initenv</b> will put this option in its sole discretion automatically. 
 </p>
 Also, keep in mind that when using the zfs features (<i><b>$workdir/</b>nc.inventory</i>, the parameter <b>zfsfeat=1</b>), and the file system ZFS, at jstop, file system of jails will be
 unmounted and those catalog <i><b>$workdir/</b>jails-data/jail1-data</i> will be empty. If in such a case when jail data is requires without running it,  by the command <b>zfs list</b> You can see the name
  appropriate file system and run zfs mount <b>fs</b>.
 
+<h3>Priority launch of jails</h3>
+
+In cbsd, you can specify the sequence in which the jails will be started. For example, you may wish to have a jail <b>mysqljail</b> and <b>redisjail</b> started earlier than <b>wwwjail</b>. given
+functional implements <b>cbsd jorder</b> and regulated in the setting of each jail.
+
+/ / to be continued

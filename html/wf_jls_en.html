@@ -10,7 +10,7 @@ At a conclusion by the local node, fields are shown:
 <pre>
 JNAME JID     IP             Hostname          Path      Status
 </pre>
-<br><br>
+<br>
 <b>JNAME</b> - jail name
 <br>
 <b>JID</b> - Jail ID
@@ -21,14 +21,10 @@ JNAME JID     IP             Hostname          Path      Status
 <br>
 <b>Path</b> - root filesystem for jail
 <br><br>
-<b>Status</b> - On (running), Off (stoped), Sl (Slave mode, unregister)
+<b>Status</b> - On (running), Off (stoped), Unregister (jail has its rc.conf (old format) but not in the SQL database)
 <br><br>
-note: jail in Slave status can not be started until it not switch to Off status (register)
-With Slave status, <b>rc.conf</b>, <b>fstab</b> and data directory are named as
-<b>rc.conf.slave</b>, <b>fstab.slave</b> and <b>jname-data.slave</b>. In a slave condition can
-there are replication for jail, backup. To switch the Slave/Master modes it is possible through
- <b>cbsd jswmode</b> command.
-<br><br>
+Note: Jail in the unregister status may be insert to SQL database via command: <b>cbsd jregister</b>.
+<br>
 In a case when to the local server are added a key of remote of nodes, it is possible to receive 
 the list of all jails in a farm via
 <pre>

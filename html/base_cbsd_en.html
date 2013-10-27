@@ -10,6 +10,7 @@
 <!--# include file="/html/cbsdmenu_ru.html" -->
 <body>
 <!--# include file="/html/translate_en.html" -->
+<!--# include file="/html/currentver_en.html" -->
 <center><FONT face="verdana,arial,helvetica" size="+1">Building and upgrading bases</font></center>
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br>
@@ -21,9 +22,9 @@
 % cbsd installworld
 </pre>
 
-<i>remark</i>: by the "world" will be meant as the catalog containing full copy/hierarchy of FreeBSD OS files.
+<i>remark</i>: by the "base" will be meant as the catalog containing full copy/hierarchy of FreeBSD OS files.
 <br><br>
-For creation of a new jails (or the start jails which world is mounted in RO required), the copy of base is necessary.
+For creation of a new jails (or the start jails which base is mounted in RO required), the copy of base is necessary.
 Below steps for getting the initial FreeBSD sources from SVN repository of the project (<a href="http://svn.freebsd.org/">http://svn.freebsd.org</a>), its compilation and installation in the separate 
 directory which will act as base are described. These actions can be demanded, if you don't want to use already
 builded version available on resources <a href="ftp://ftp.freebsd.org">ftp://ftp.freebsd.org</a> and <a href="http://bsdstore.ru">http://bsdstore.ru</a> (for example security reason. It is
@@ -47,7 +48,7 @@ Receiving or updating of source code for STABLE (for example, for RELENG_9):
 </pre>
 These commands, at existence of source code in SVN, will fill catalogs <b>$workdir/src/src_$ver</b>
 <h3>2) Compilation of source code via <b>cbsd buildworld</b>:</h3>
-The result received from a step 1, can be used for world compilation.
+The result received from a step 1, can be used for base compilation.
 World compilation, at existence <b>$workdir/src/src_$ver</b> dir for current node version:
 <pre>
 % cbsd buildworld
@@ -64,7 +65,7 @@ The num ofr parallel jobs is regulated through the <i>maxjobs</i> parameter, for
 </pre>
 At compilation, the personal <a href="http://www.freebsd.org/cgi/man.cgi?query=src.conf&apropos=0&sektion=0&manpath=FreeBSD+9-current&arch=default&format=html">src.conf(5)</a> can be used ,
 in which it is possible to specify standard KNOBS-y. The src.conf file should placed in the catalog $workdir/etc/ and have name <b>src-</b><i>basename</i><b>.conf</b>, where basename - any name of configuration.
-For example, in default cbsd installation there are files <b>/usr/jails/etc/src-lite.conf</b> and </b>/usr/jails/etc/src-pxe.conf</b>. For world build with certain src.conf, it is necessary to specify <i>basename</i> parameter:
+For example, in default cbsd installation there are file <b>/usr/jails/etc/src-lite.conf</b>. For base build with certain src.conf, it is necessary to specify <i>basename</i> parameter:
 <pre>
 % cbsd buildworld basename=lite
 </pre>
@@ -75,8 +76,8 @@ where $basename - is name of configuartion.
 <li><i>arch</i> - build for concrete architecture
 <li><i>stable</i> - build for RELENG_X branch
 <br>
-<h3>3) world installation via <b>cbsd installworld</b>:</h3>
-The result received from a step 2, it is possible to use for installation of the new world in <b>${workdir}/basejail/base_*</b> directory, from where it will be already mounted in the RO mode, or to be formed a new jails.
+<h3>3) base installation via <b>cbsd installworld</b>:</h3>
+The result received from a step 2, it is possible to use for installation of the new base in <b>${workdir}/basejail/base_*</b> directory, from where it will be already mounted in the RO mode, or to be formed a new jails.
 For install of files for the current version of system:
 <pre>
 % cbsd installworld
@@ -90,6 +91,6 @@ other params for installworld:
 <li><i>arch</i> - install for concrete architecture
 <li><i>stable</i> - install for RELENG_X branch
 <br><br>
-When you have the world in <b>${workdir}/basejail</b>,you can go to the <a href="/html/wf_jcreate_ssi_en.html">jail creation</a>.
+When you have the base in <b>${workdir}/basejail</b>,you can go to the <a href="/html/wf_jcreate_ssi_en.html">jail creation</a>.
 </body>
 </html>

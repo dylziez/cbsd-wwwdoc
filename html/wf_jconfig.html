@@ -48,7 +48,7 @@ ifconfig <b>inteface</b> <b>ips</b> <i>-alias</i>
 <pre>
 /usr/home/sharefs /usr/home/sharefs nullfs rw 0 0
 </pre>
-если вы хотите смонтировать в каталог /tmp клетки jail1 (те, фактически в /usr/jails/jails/jail1/tmp), то запись в 
+если вы хотите смонтировать в каталог /tmp клетки jail1 <b>tmpfs</b> (те, фактически в /usr/jails/jails/jail1/tmp), то запись в 
 <i><b>$workdir/jails-fstab/</b>fstab.jail1.local</i> должна выглядить так:
 <pre>
 tmpfs /tmp tmpfs rw 0 0
