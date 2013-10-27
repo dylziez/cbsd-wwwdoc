@@ -10,11 +10,12 @@
 </HEAD>
 <!--# include file="/html/cbsdmenu_ru.html" -->
 <body>
-<center><FONT face="verdana,arial,helvetica" size="+1">rc.conf клеток cbsd</font></center>
+<!--# include file="/html/currentver.html" -->
+<center><FONT face="verdana,arial,helvetica" size="+1">параметры клеток cbsd</font></center>
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br>
 <body>
-<p>Каждая клетка cbsd имеет свой конфигурационный файл в каталоге $workdir/jails-rcconf, который используется при старте и останове клеток.
+<p>Каждая клетка cbsd имеет свой набор настроек, который используется при старте, останове и работе клеток.
 Здесь дана краткая информация стандартных параметров.
 <hr>
 <pre>
@@ -49,7 +50,7 @@ ip4_addr="10.0.0.5/24";
 </pre>
 IP адрес клетки. Если планируется использовать несколько IP адресов, они записываются через запятую:
 <br>
-<br>ip4_addr="10.0.0.5/24,192.168.0.2/30,54:04:a6:b2:11:c4/53";
+<br>ip4_addr="10.0.0.5/24,192.168.0.2/30,54:04:a6:b2:11:c4/64";
 <hr>
 <pre>
 mount_devfs="1";
@@ -79,7 +80,7 @@ mount_fstab="/usr/jails/jails-fstab/fstab.jail1";
 <pre>
 arch="amd64";
 </pre>
-Архитектура клетки (и соответственно. базы из $workdir/basejail)
+Архитектура клетки (и соответственно, базы из $workdir/basejail)
 <hr>
 <pre>
 mkhostsfile="1";

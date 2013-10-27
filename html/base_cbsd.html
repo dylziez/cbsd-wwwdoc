@@ -10,7 +10,8 @@
 </HEAD>
 <!--# include file="/html/cbsdmenu_ru.html" -->
 <body>
-<center><FONT face="verdana,arial,helvetica" size="+1">Сборка и обновление мира</font></center>
+<!--# include file="/html/currentver.html" -->
+<center><FONT face="verdana,arial,helvetica" size="+1">Сборка и обновление базы</font></center>
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br>
 <body>
@@ -21,9 +22,9 @@
 % cbsd installworld
 </pre>
 
-<i>Примечание</i>: под словом "мир" будет подразумеваться каталог, содержащий полную копию/иерархию файлов ОС FreeBSD.
+<i>Примечание</i>: под словом "база" будет подразумеваться каталог, содержащий полную копию/иерархию файлов ОС FreeBSD.
 <br><br>
-Для создания новой клетки (или запуска клетки, мир которой монтируется в RO), необходима готовая база, из которой будет
+Для создания новой клетки (или запуска клетки, база которой монтируется в RO), необходима готовая база, из которой будет
 собран новый <b>jail</b> (или которая будет подмонтирована при запуске клетки).
 
 Ниже описаны шаги для получения исходных кодов FreeBSD из SVN репозитория проекта (<a href="http://svn.freebsd.org/">http://svn.freebsd.org</a>), его компиляция и инсталляция в отдельный 
@@ -46,10 +47,11 @@
 <pre>
 % cbsd csup ver=9 stable=1
 </pre>
+(Если вы хотите работать с STABLE по-умолчанию, рекомендуется выставить эту опцию глобально в cbsd initenv-tui, после чего добавлять stable=1 к командам будет необязательно).
 Эти команды, при наличие исходных кодов в SVN, наполнят каталоги <b>$workdir/src/src_$ver</b>
 <h3>2) Компиляция исходного кода через cbsd buildworld:</h3>
-Результат, полученный с шага 1, может быть использован для компиляции мира.
-Сборка мира, при наличие <b>$workdir/src/src_$ver</b> каталога для текущей версии ядра:
+Результат, полученный с шага 1, может быть использован для компиляции базы.
+Сборка базы, при наличие <b>$workdir/src/src_$ver</b> каталога для текущей версии ядра:
 <pre>
 % cbsd buildworld
 </pre>
@@ -65,7 +67,7 @@
 </pre>
 При компиляции, может учитываться персональный <a href="http://www.freebsd.org/cgi/man.cgi?query=src.conf&apropos=0&sektion=0&manpath=FreeBSD+9-current&arch=default&format=html">src.conf(5)</a>,
 в котором можно указывать стандартные KNOBS-ы. Файл src.conf должен лежать в каталоге $workdir/etc/ с именем <b>src-</b><i>basename</i><b>.conf</b>, где basename - любое имя-название конфигурации.
-Например, в стандартной cbsd имеются файлы /usr/jails/etc/src-lite.conf и /usr/jails/etc/src-pxe.conf. Для сборки мира с определенным src.conf, необходимо указать параметр basename:
+Например, в стандартной cbsd имеется файл /usr/jails/etc/src-lite.conf. Для сборки мира с определенным src.conf, необходимо указать параметр basename:
 <pre>
 % cbsd buildworld basename=lite
 </pre>
@@ -91,6 +93,6 @@
 <li><i>arch</i> - инсталляция для конкретной архитектуры
 <li><i>stable</i> - инсталляция RELENG_X ветки
 <br><br>
-Имея готовый мир в <b>${workdir}/basejail</b>, можно приступать к <a href="/html/wf_jcreate_ssi.html">созданию клеток</a>.
+Имея готовую базу в <b>${workdir}/basejail</b>, можно приступать к <a href="/html/wf_jcreate_ssi.html">созданию клеток</a>.
 </body>
 </html>
