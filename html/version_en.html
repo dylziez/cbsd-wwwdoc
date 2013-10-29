@@ -19,6 +19,11 @@
 <li> move users file mounts to fstab.local
 <li> switch between rw and ro bases in jail with the appropriate disposal or filling bases
 <br><br>
+<i>For users who upgrading from 9.2.{0,1}:</i>
+<br>a) If you edited the fstab for the jail, these records should be transferred to fstab.local file manually
+<br>b) Files rc.conf for the jails in the jails-rcconf is obsolete and all setings in SQLite3 database now (the old copy of the file is saved in the jails-system/jailname)
+<br>Please refer to <a href="/html/wf_jconfig_ssi_en.html">jail config</a> pages for details.
+<br><br>
 <b>9.2.1</b> - 2013-08-02
 <br><br>
 <li> Partial migration of settings data to SQLite
