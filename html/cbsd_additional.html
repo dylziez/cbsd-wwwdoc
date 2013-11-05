@@ -113,7 +113,12 @@ cbsd installworld/installkernel или cbsd repo action=get sources=base/kernel)
 они были добавлены</td></tr>
 <tr><td>/usr/local/cbsd</td><td>Копия оригинальных файлов cbsd устанавливаемая портом. Также, содержит рабочие скрипты в каталоге <b>sudoexec</b></td></tr>
 </table>
-<h3>Если что-то пошло не так</h3>
+<h3><ins>Подсчет трафика jail</ins><a href="#Иерархия-cbsd"></a></h3>
+В данный момент, для подсчета трафика jail используются правила <b>count</b> у фильтра <b>ipfw</b>. 
+<b>cbsd</b> назначает для счетчиков номера правил из диапазона <b>99 - 2000</b> (можно изменить в cbsd.conf).
+<br>Поэтому будьте внимательны и следите за тем, чтобы ваши правила IPFW следовали после указанного диапазона.
+<br>
+<h3><ins>Если что-то пошло не так</ins></h3>
 <br>
 <li> В случае, если при выполнении утилит <b>cbsd</b> возникают ошибки, рекомендуется оформить проблему в баг-трекере проекта: <a href="https://github.com/olevole/cbsd/issues">cbsd issues</a> или сообщить об ошибке по email: <b>cbsd</b> <i>at</i> <b>bsdstore.ru</b>
 <li> Делайте резервные копии каталогов ${workdir}/var/db, ${workdir}/var/db, ${workdir}/jails-fstab и, конечно же, данные клеток в каталоге ${workdir}/jails-data

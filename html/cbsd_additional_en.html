@@ -115,7 +115,12 @@ configurators, etc) as well as the preserved jail traffic when using ipfw and it
 <tr><td>${workdir}/var</td><td> directory that contains system information cbsd. For example, in ${workdir}/var/db is an inventory of local and remote nodes if were added </td></tr>
 <tr><td>/usr/local/cbsd</td><td> A copy of the original files installed by cbsd port. Also contains the working scripts in sudoexec </td></tr>
 </table>
-<h3>If something went wrong</h3>
+<h3><ins>Counting traffic jail</ins><a href="#Иерархия-cbsd"></a></h3>
+At this point,  for counting jail traffic used <b>count</b> ruleset of <b>ipfw</b> filter. 
+<b>cbsd</b> sets number of counters in <b>99 - 2000</b> range (you can change this in cbsd.conf).
+<br>So be careful and make sure to follow your rules IPFW after a specified range.
+<br>
+<h3><ins>If something went wrong</ins></h3>
 <li> In the case when with <b>cbsd</b> tools errors, it is recommended to make the problem a bug-tracker of the project: <a href="https://github.com/olevole/cbsd/issues">cbsd issues</a> 
 or report via e-mail: <b>cbsd</b> <i>at</i> <b>bsdstore.ru</b>
 <li> Please make backup copies of directory ${workdir}/var/db, ${workdir}/var/db, ${workdir}/jails-fstab regularly. And also, of course, the data of their cells <i>${workdir}/jails-data</i>
