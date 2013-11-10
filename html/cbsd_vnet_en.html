@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="FreeBSD VIMAGE jals, FreeBSD VNET jails">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<body>
+<!--# include file="/html/translate_en.html" -->
+<center><p style="color:RED">Attention! This page describes cbsd <b>10.0.0</b> version.</p>
+<FONT size="-1">
+<i>This version is in the development and if you want to try it at your own risk, use <b>https://github.com/olevole/cbsd.git</b> for yours <b>/usr/local/cbsd</b></i></center>
+</FONT>
+<br>
+<center><FONT face="verdana,arial,helvetica" size="+1">cbsd FreeBSD jail и VIMAGE (vnet)</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<p>In view of some of the subtleties with FreeBSD vnet-jail, information about it deduced this separate article</p>
+First of all, the <b>VIMAGE</b> functionality requires a customized kernel with
+<pre>
+  options VIMAGE
+</pre>
+If you get a kernel from the repository through a command cbsd:
+<pre>
+  cbsd repo action=get sources=kernel
+</pre>
+that your kernel is supports for VIMAGE.
+<br><br>
+In the case when kernel has no options, parameter <b>vnet</b> in the file <i>${workdir}/nc.inventory</i> will always be set to <b>0</b>
+<br><br>
+If this option is present in the kernel, in the configurator of creation jail will be present parameter <b>vnet</b>.
+<br><br>
+Second, keep in mind that although <b>VIMAGE</b> (available from FreeBSD 8.0) and held the status of an experimental feature for the 4 years of its existence in the base operating system,
+it can still be found a variety of problems, the correction of which is extremely tightened: in GNATS (current ticket system FreeBSD) 
+quite <a href="http://www.freebsd.org/cgi/query-pr-summary.cgi?category=&severity=&priority=&class=&state=&sort=none&text=vimage&responsible=&multitext=&originator=&release=">a few</a>
+panics messages using VIMAGE in conjunction with the various components;
+<br><br>Besides <a href="http://www.freebsd.org/cgi/query-pr.cgi?pr=164763">seen</a> cases of memory leaking.
+<br><br>
+Well, now the good;)
+<br>
+<p><b>vnet</b>-featured jail has at its disposal a fully virtualized and isolated network stack, which in turn allows the use of a private jail (albeit virtual)
+interface, "right" <b>loopback</b>, use within the jail a packet filters (<b>pf, ipfw, pfilter</b>), raise the tunnels and reconfigure the routing table.
+</p>
+When you create a vnet-jails the <b>ip4_addr</b> should indicate <b>0</b>, which prohibit cbsd set itself an IP address for vnet jail.
+<br>
+<i>Note: The installation of IP addresses in the vnet jail is not implemented yet</i>
+<br>
+Also, if you want to get a jail itself an IP address automatically (via DHCP), you would write a separate section devfs.rules, in which you need to open 
+<a href="http://www.freebsd.org/cgi/man.cgi?query=bpf&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html"><b>bpf(4)</b></a>-device ( unhide bpf*), and set 
+this devfs rule number to <b>vnet</b>-jail (via <b>cbsd jconfig jname=XXXX</b>)
+<br>
+cbsd creates virtual interfaces using a pair of <a href="http://www.freebsd.org/cgi/man.cgi?query=epair&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html"><b>epair(4)</b></a>, but the "other end" virtual cable that connects to the jail, <b>cbsd</b> renamed to <b>eth0</b> interface.
+<br><br>
+<i>Note: </i>: Rename this is relevant only for FreeBSD jails. If a jail is run as Linux-based, renaming will not happen.
+<br><br>
+Renaming to <b>eth0</b> by the fact that each new <b>epair</b> increments the number of the interface, those of the first <b>vnet</b>-jail in original, interface will be called as epair<b>0</b>a. When you running the fifth of jails, in last jail
+interface will be called as epair<b>5</b>a. It's not very convenient whith jail migrating (on another server, it may be a different number), and definitely not convenient that every time you have to correct the contents of the rc.conf
+with the network setup.
+<br>
+<br><br><center><i>Sets 0 (empty) in ip4_addr field when create vnet-jail</i><br><br>
+<img src="/html/img/vnet1.png"></img>
+<br>
+<br><br><center><i>If the kernel has VIMAGE option, it is possible to set the vnet 1</i><br><br>
+<img src="/html/img/vnet2.png"></img>
+<br>
+<br><br><center><i>Inside the jail. We do what we want, we get your IP, set up ipfw</i><br><br>
+<img src="/html/img/vnet3.png"></img>
+<br><br>

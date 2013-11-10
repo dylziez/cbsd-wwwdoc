@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">Shell scripting best practices</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br>
+<p>
+Автор: <b>olevole</b>
+<br>
+Тэги: <b>best practices</b>
+</p>
+Данный текст - нарост из опыта <b>sh</b>-скриптования, некий style которым я руководствуюсь при написании скриптов на <b>sh</b> на <b>*nix</b> платформах. Часть из них - лишь мои персональные предпочтения.
+</p>
+<h2>Временные файлы</h2>
+* Если скрипту необходимо хранить временные данные в промежуточных файлах, используйте <b>mktemp(1)</b> для автоматического
+создания уникальный временных файлов в /tmp каталоге, гарантирующую уникальность, или спользуйте $$ (pid) в названии временного файла.
+
+<h2>Post-action, подчищаем за собой по выходу из скрипта</h2>
+* Если скрипт создает временные файлы, по завершению (в том числе аварийному) он должен за собой все подчищать (или выполнить какие-то другие post-функции). Для этого 
+пользуемся фунционалом <b>trap</b>, не забывая перечислить возможные сигналы, по которым скрипт может завершиться.<br><br>
+Для удобства, пишем не номера сигналов, а их макросы, например:
+<br>
+<pre>
+   trap "rm -rf /tmp/myprogdir; rm -f /tmp/mytmp" HUP INT ABRT BUS TERM EXIT
+</pre>
+Если по ходу выполнения скрипта вы хотите дописывать trap, удобно это делать через отдельную переменную, например:
+<pre>
+  #!/bin/sh
+
+  TRAP="echo Bye"
+  trap "${TRAP}" EXIT
+
+  do_something()
+
+  trap "${TRAP}; echo Cul8r" EXIT
+
+  do_something_else()
+</pre>
+<h2> Документируем</h2>
+* в начале функций пишем краткое описание функции, какие параметры и в качестве чего она принимает и что получается на выходе.
+<pre>
+  ..
+  #algebral sum for $1 and $2, return $res as result
+  function sum()
+  {
+  ..
+</pre>
+<h2>Объявляем локальные переменные функции</h2>
+* Все переменные, которые нужны только функции, описываем как локальные (также, это защита от того,
+что вы переназначите уже где-то ранее объявленную и где-то позже используемую переменную, например <b>TERM</b>, <b>LANG</b>, <b>IFS</b> и тд.
+<br><br>
+Также, локальные переменные удобно условиться писать с подчеркивания, а переменные окружения - в верхнем регистре.
+<br><br>
+Например:
+<br>
+<pre>
+  #algebral sum for $1 and $2, return $res as result
+  function sum() {
+    local _a _b
+
+    [ -z "${1}" -o -z "${2}" ] && return 1
+    _a=$1
+    _b=$2
+    res=$(( _a + _b ))
+  }
+
+  sum 2 5
+  echo ${res}
+</pre>
+
+<h2>Предпочитайте build-in операции внешним утилитам.</h2>
+
+При математических операциях, пользуемся встроенной в sh математикой, а не внешними утилитами как *bc* или *expr*.
+<br>
+Например, вместо `expr $a=$a+1`, делаем:
+<br>
+<pre>
+  a=$(( a + 1 ))
+</pre>
+<pre>
+  b=$(( a / 2 ))
+</pre>
+Для парсинга par=val используйте %% и ##, например
+<br>
+a="hostname-value"
+<br><br>
+Вместо:
+<br>
+<pre>
+  p1=`echo $a |tr -d "-" |awk '{printf $1}'`
+  p2=`echo $a |tr -d "-" |awk '{printf $1}'`
+</pre>
+Делаем:
+<br>
+<pre>
+  p1=${a%%-*}
+  p2=${a##*-}
+</pre>
+или
+<br>
+<pre>
+  p1=${a%-*}
+  p2=${a#*-}
+</pre>
+пример, когда необходимо распарить из файла:
+<br>
+<pre>
+  while read line; do
+    line=${line%%=*}
+  done < /path/to/file
+</pre>
+<h2>Логические И-ИЛИ вместо if-then блоков, continue/return/break</h2>
+Стараемся избегать большого количества if; then; fi конструкций, там где это возможно, заменяем их логичискими *И - &&* или *ИЛИ - ||*.
+<br>
+Например:
+<br>
+Конструкции вида:
+<br>
+<pre>
+     if [ $a -gt 10 ]; then
+        if [ $b -ne 10 ]; then 
+           if [ $z "${t}" ]; then 
+                  ...
+           fi
+          exit   //выйдем если b не равно 10
+        fi
+        exit //выйдем, если a меньше 10
+     fi
+</pre>
+<br>
+Стаемся не раздувать и пишем так:
+<br>
+<pre>
+
+     [ $a -ne 10 ] && exit
+     [ $b -gt 10 ] && exit
+       ...
+</pre>
+(читаем как: если условие правильно, то выполним то что после && )
+<br>
+либо 
+<br>
+<pre>
+
+     [ $a -gt 10 ] || exit
+     [ $b -ne 10 ] || exit
+</pre>
+(читаем как: если условие правильно, идем дальше, иначе, выполним то что после || )
+<br>
+Простые конструкции без *else/elif* с одной командой внутри, заменяем на &&
+<br><br>
+Вместо:
+<pre>
+  if [ -n "$filled_par" ]; then
+    echo "ok"
+  fi
+</pre>
+Пишем:
+<pre>
+      [ -n "$filled_par" ] && echo "ok"
+</pre>
+<br>
+Если внутри конструкции идет уже больше двух++ команд, то вместо <b>&& ||</b> наоборот ухудшают читаемость и в данном случае лучше использовать <b>*if / fi*</b> блоки:
+<br>
+Вместо:
+<pre>
+  [ -n "$filled_par" ] && echo "ok" && date && echo "Cool"
+</pre>
+или
+<pre>
+  [ -n "$filled_par" ] && { 
+    echo "ok" 
+    date
+    echo "Cool"
+  }
+</pre>
+пишем:
+<br>
+<pre>
+if [ -n "$filled_par" ]; then
+  echo "ok" 
+  date
+  echo "Cool"
+fi
+</pre>
+Если внутри цикла идет проверка переменной, не раздувайте код на if / else, используйте оператор continue:
+<br>
+Вместо
+<pre>
+ for i in PARAM; do
+   if [ "${i}" = "name" ]; then
+      do something
+        and something else
+         and something else
+          and something else
+            and something else
+              and something else
+               and something else
+                and many-many other action here
+    else
+       nop ;(
+    fi
+done
+</pre>
+Пишите:
+<pre>
+ for i in PARAM; do
+   [ "${i}" != "name" ] && continue
+      do something
+        and something else
+         and something else
+          and something else
+            and something else
+              and something else
+               and something else
+                and many-many other action here
+
+done
+</pre>
+Аналогично с функциями и оператором return:
+<br><br>
+Вместо:
+<pre>
+# argument $1 is mandatory
+# show one hundred $1 here
+function checkit()
+{
+local _i
+
+
+if [ -n "${1}" ]; then
+   for _i in `jot 0 1000`; do
+      echo ${1}
+    done
+else
+   echo "argument is mandatory"
+fi
+}
+</pre>
+Пишите:
+<pre>
+# argument $1 is mandatory
+# show one hundred $1 here
+function checkit()
+{
+local _i
+
+   [ -z "${1}" ] && echo "argument is mandatory" && return 1
+   for _i in `jot 0 1000`; do
+      echo ${1}
+    done
+}
+</pre>
+<h2>Stderr и функция err()</h2>
+Ошибки необходимо выводить в stderr: echo "Error"  >&2. Удобно вывод ошибок обернуть в отдельную процедуру err и использовать ее через && :
+<br>
+<pre>
+      # fatal error. Print message then quit with exitval
+      err()
+      {
+        exitval=$1
+        shift
+        echo -e "$*" 1>&2
+        exit $exitval
+      }
+
+      [ -z "${must_be_not_empty}" ] && err 1 "param must_be_not_empty is empty"
+</pre>
+<h2>Скобки процедур</h2>
+Скобкам начала процедур и конца отдаем перенос строчки. Например:
+<br>
+плохо читаемо:
+<br>
+<pre>
+      err() {
+      echo "hi" }
+</pre>
+<br>
+намного лучше:
+<br>
+<pre>
+      err()
+      {
+          echo "hi"
+      }
+</pre>
+
+<h2>Закрытие if и отступы</h2>
+
+При условии if/then, закрывающая fi должна всегда находится на уровне соответствующего if, например:
+<br>
+плохо читаемо:
+<pre>
+     if true;
+       then
+         echo "lol"
+       fi
+</pre>
+намного лучше:
+<pre>
+     if true; then
+        echo "lol"
+     fi
+</pre>
+
+<h2>Cases и отступы</h2>
+
+Конец case (*;;*) должен находиться на уровне конца сценария этого кейса.
+Например:
+<br>
+плохо читаемо:
+<br>
+<pre>
+    case $value in
+       1) do_something ;;
+       2) if [ 1 -eq 1 ]; then
+               echo "Great!"
+          fi
+       ;;
+    esac
+</pre>
+намного лучше:
+<br>
+<pre>
+    case $value in
+       1) do_something 
+          ;;
+       2) if [ 1 -eq 1 ]; then
+               echo "Great!"
+          fi
+          ;;
+    esac
+</pre>
+<h2>Экранируйте переменные и указывайте границы переменных</h2>
+Всегда указывайте границы переменной через <b>{</b> и <b>}</b>
+<br><br>
+Вместо:
+<pre>
+   echo $value
+</pre>
+Пишите:
+<br>
+<pre>
+  echo ${value}
+</pre>
+Переменные со строковым содержим, экранируйте кавычками
+<br>
+<br>
+Вместо:
+<pre>
+  if [ -f ${myfile} ]; then
+   ..
+</pre>
+Пишите:
+<pre>
+  if [ -f "${myfile}" ]; then
+   ..
+</pre>
+<h2>Избегайте лишних телодвижений</h2>
+Каждый вызов утилит - это отдельная и порой ненужная работа для ОС</h2>
+
+<br><br>Вместо:
+<pre>
+  cat file | grep something
+</pre>
+Пишите:
+<pre>
+  grep somethins file
+</pre>
+Вместо:
+<pre>
+  cat file | command
+</pre>
+Пишите:
+<pre>
+  command < file
+</pre>
+Используйте heredoc там, где собираетесь использовтаь большое количество <b>echo</b>
+<br><br>
+Вместо:
+<pre>
+  echo "Hello"
+  echo "World"
+  echo "My name is ${name}"
+</pre>
+Пишите:
+<pre>
+  cat << EOF
+Hello
+World
+My name is ${name}
+EOF
+</pre>
+<br>
+Избегайте лишних cat, grep там, где позволяет справится с обработкой функционал одной утилиты:
+<br><br>
+Вместо:
+<pre>
+  cat file |grep test |awk '{printf $2}' 
+</pre>
+Пишите:
+<pre>
+  awk '/test/{print $2}' file
+</pre>
+
+<h2>Используйте IFS для установки разделителя</h2>
+
+Вместо:
+<pre>
+  #!/bin/sh
+
+  myvalue="one|two|three"
+
+  for i in `echo $myvalue|tr "|" " "`; do
+    echo $i
+  done
+</pre>
+Используйте:
+<pre>
+  #!/bin/sh
+
+  myvalue="one|two|three"
+
+  IFS="|"
+  for i in $myvalue; do
+    echo ${i}
+  done
+</pre>
+
+<h2>Используйте возможность sh немедленно завершить выполнение скрипта при критических ошибках</h2>
+Устанавливайте флаг немедленного завершения при возвращаемых кодах ошибок != 0
+<pre>
+  set +o errexit
+  set -o errexit
+</pre>
+снимая и устанавливая принудительное завершение скрипта на тех участках кода, ошибки в которых фатальны для дальнейшего выполнения. 
+<br>Используйте <b>true</b> для тех команд, 
+которые не фатальны но идут в участке, который помечен завершаемый при любой ошибке. 
+<br><br>Например:
+<pre>
+  #!/bin/sh
+
+  set -e  # no all error is critical
+
+  mkdir /tmp/ole.$$
+
+  # this is produce error, couse -r needed for remove dir
+  rm -f /tmp/ole.$$ ||true
+
+  rmdir /tmp/ole.$$
+</pre>
