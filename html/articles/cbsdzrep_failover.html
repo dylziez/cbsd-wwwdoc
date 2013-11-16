@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="CBSD, BSDStore">
+<LINK rel="shortcut icon" href="favicon.ico">
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<body>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">CBSD, ZFS-репликация и Failover для клеток</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br>
+<p>Статья, описывающая вариант настройки двух физических нод под управлением FreeBSD и запуском клеток в режиме Failover</p>
+Требования, которые необходимо соблюсти:
+<br>
+<br>
+<li>- <b>CBSD</b> не ниже 10.0.0 версии
+<li>- Два физических сервера
+<li>- Включенная <b>zfs feat</b> ( рабочий каталог <b>$workdir</b> должен размещаться на ZFS файловой системе )
+<li>- <i>(желательно)</i> Для ускорения пересылки снапшотов ZFS, рекомендуется использовать мультепликсирование SSH, чтобы исключить на каждом снапшоте "тяжелый" этап хендшейка ssh соединения.
+<br><br>
+Это можно сделать двумя способами: <br>
+<br>
+a) Включить удаленную ноду в <b>cbsd nodepinger</b>, которая автоматически устанавливает ssh-сессию (не туннель)
+<br>
+b) Включить туннель вручную, например:
+<pre>
+% ssh -f -w 0:1 remotenode true
+</pre>
+что создаст <b><a href="http://www.freebsd.org/cgi/man.cgi?query=tun&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html">tun(4)</a></b> интерфейс:
+<pre>
+tun0: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> metric 0 mtu 1500
+    options=80000<LINKSTATE>
+    inet6 fe80::5ed9:98ff:fef5:a90f%tun1 prefixlen 64 scopeid 0x6 
+    nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
+    Opened by PID XXX
+</pre>
+PS: во втором случае, опции
+<pre>
+ControlMaster
+ControlPath
+</pre>
+в <i>~/.ssh/config</i> должны присутствовать (по-умолчанию, системный пользователь <b>cbsd</b> их имеет)
+<br>
+<br>
+<br>
+//WIP
+</body></html>
