@@ -37,7 +37,13 @@
 <br>  a) Если вы правили fstab для клетки, эти записи необходимо перенести локальный fstab вручную
 <br>b) Файлов rc.conf для клеток в каталоге jails-rcconf больше нет, записи находятся в SQLite3 базе (старая копия файла сохраняется в каталоге jails-system/jailname)
 <br>За подробностями обратитесь к разделу <a href="/html/wf_jconfig_ssi.html">конфигурации jail</a>
-<br><br>
+<br>
+<br>
+<hr>
+<b><font style="color:RED">Внимание!</font></b> - 2013-09-04
+<br>В связи с <a href="http://lists.freebsd.org/pipermail/freebsd-doc/2013-September/022544.html">найденной особенностью</a> в случае с nullfs-базами клеток, будьте осторожны при развертывании публичного хостинга.
+<br><i>Update:</i>: Или просто следуйте инструкции данной <a href="http://www.freebsd.org/security/advisories/FreeBSD-SA-13:13.nullfs.asc">бюллетени безопасности</a>.
+<hr><br><br>
 <b>9.2.1</b> - 2013-08-02
 <br><br>
 <li> частичный переход на хранение данных в SQLite
