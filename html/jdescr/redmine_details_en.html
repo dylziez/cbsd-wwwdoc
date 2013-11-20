@@ -11,19 +11,35 @@
 <!--# include file="/html/translate_en.html" -->
 <FONT face="verdana,arial,helvetica" size="+1">Redmine jail</font>
 <FONT face="verdana,arial,helvetica" size="-1">
-<br><br>To install redmine cbsd jail execute the following commands:
+<br><br>For installing Redmine cbsd jail just follow this steps:
 <pre>
 % cbsd repo action=get sources=img name=redmine
 </pre>
-After downloading images and set correct ip address of jail, run install script who will ask you for a password for root user in MySQL, password of redmine user in MySQL and the name of the resource will be available via http://FQDN:
+or
+<pre>
+% cbsd repo action=get sources=img name=redmine ver=9.2
+</pre>
+If you hosted on another ( non 9.2 ) FreeBSD version.
+<br>
+After image downloading please set correct name and ip address of the jail and run a <b>install script</b> that asks you for passwords of MySQL superuser and redmine SQL user:
 <pre>
 % cbsd jconfig jname=redmine redmineinstall
 </pre>
-<p>If all goes well, when you start the jail:
+<br><br>
+<img src="/html/img/redmine1.png"></img>
+<br>
+<p>At the end of redmine initialization you will be asked which language you prefer by default:
+<pre>
+Select language: ar, az, bg, bs, ca, cs, da, de, el, en, en-GB, es, et, eu, fa, fi, fr, gl, he, hr, hu, id, it, ja, ko, lt, lv, mk, mn, nl, no, pl, pt, pt-BR, ro, ru, sk, sl, sq, sr, sr-YU, sv, th, tr, uk, vi, zh, zh-TW [en]
+</pre>
+Just hit 'Enter' for English or choose correct lang
+<br><br>
+Now Redmine ready to use. Do not forget to set <i>astart=1</i> in <b>cbsd jconfig jname=redmine</b> if you want for starting jail automatically.
+<br><br>By the starting jail via
 <pre>
 % cbsd jstart redmine
 </pre>
-your node automatically get a clean Redmine installation in the jail which is available for configuring via http://FQDN with Redmine default login and password: admin
+a clean Redmine installation in the jail will be available for accessing via <b>http://FQDN</b> with default login and password: <b>admin</b>
 <br>
 </BODY>
 </HTML>
