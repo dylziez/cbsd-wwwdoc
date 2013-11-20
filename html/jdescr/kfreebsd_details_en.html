@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <META http-equiv="content-type" content="text/html; charset=UTF-8">
+  <META name="Description" content="CBSD Store">
+  <META name="Keywords" content="Debian kFreeBSD jail">
+  <LINK rel="shortcut icon" href="favicon.ico">
+  <title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<!--# include file="/html/translate_en.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">KFreeBSD Jail</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br> This is Debian kFreeBSD in jail.<br><br>
+Current ( <a href="http://www.debian.org/ports/kfreebsd-gnu/">Debian GNU/kFreeBSD</a> ) project/environment which is running on FreeBSD kernel can be interesting to people who are liked tools and file system hierarchy of Linux Debian
+<br><br>For installing kFreeBSD cbsd jail just follow this steps:
+<pre>
+% cbsd repo action=get sources=img name=kfreebsd
+</pre>
+or
+<pre>
+% cbsd repo action=get sources=img name=kfreebsd ver=9.2
+</pre>
+If you hosted on another ( non 9.2 ) FreeBSD version.
+<br><br>By the starting jail via
+<pre>
+% cbsd jstart kfreebsd
+</pre>
+you got a clean kFreeBSD installation in FreeBSD jail.
+<br>
+<br><br>
+<img src="/html/img/kfreebsd1.png"></img>
+<br>
+</BODY>
+</HTML>
