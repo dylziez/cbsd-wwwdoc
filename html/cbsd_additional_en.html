@@ -123,6 +123,18 @@ At this point,  for counting jail traffic used <b>count</b> ruleset of <b>ipfw</
 <h3><ins>If something went wrong</ins></h3>
 <li> In the case when with <b>cbsd</b> tools errors, it is recommended to make the problem a bug-tracker of the project: <a href="https://github.com/olevole/cbsd/issues">cbsd issues</a> 
 or report via e-mail: <b>cbsd</b> <i>at</i> <b>bsdstore.ru</b>
-<li> Please make backup copies of directory ${workdir}/var/db, ${workdir}/var/db, ${workdir}/jails-fstab regularly. And also, of course, the data of their cells <i>${workdir}/jails-data</i>
+<li> Please make backup copies of directory ${workdir}/var/db, ${workdir}/var/db, ${workdir}/jails-fstab, ${workdir}/jails-system regularly. And also, of course, the data of their cells <i>${workdir}/jails-data</i>
+<br><br>If you restore jail from backup, you will need to file ${workdir}/jails-system/${jname}/rc.conf_${jname} -after return back jails-data and jails-fstab directories for this jail to $workdir directory structure,
+copy this rc.conf_${jname} in  ${workdir}/jails-rcconf/ directory - then, at the command
+<pre>
+   % cbsd jls
+</pre>
+      
+Jail will appear in the list whit status Unregister. At the command
+<pre>
+% cbsd jregister jname=$jname
+</pre>
+
+you return jail  into a common pool and working condition.
 </body>
 </html>

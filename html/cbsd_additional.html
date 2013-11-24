@@ -121,6 +121,21 @@ cbsd installworld/installkernel или cbsd repo action=get sources=base/kernel)
 <h3><ins>Если что-то пошло не так</ins></h3>
 <br>
 <li> В случае, если при выполнении утилит <b>cbsd</b> возникают ошибки, рекомендуется оформить проблему в баг-трекере проекта: <a href="https://github.com/olevole/cbsd/issues">cbsd issues</a> или сообщить об ошибке по email: <b>cbsd</b> <i>at</i> <b>bsdstore.ru</b>
-<li> Делайте резервные копии каталогов ${workdir}/var/db, ${workdir}/var/db, ${workdir}/jails-fstab и, конечно же, данные клеток в каталоге ${workdir}/jails-data
+<br><br>
+<li> Делайте резервные копии каталогов ${workdir}/var/db, ${workdir}/var/db, ${workdir}/jails-fstab, ${workdir}/jails-system и, конечно же, данные клеток в каталоге ${workdir}/jails-data
+<br><br>Если вы будете восстанавливать Jail из бекапа, вам потребуется файл ${workdir}/jails-system/${jname}/rc.conf_${jname} - после того как каталоги jails-data и jails-fstab клетки вы вернете обратно в структуру $workdir каталогов,
+скопируйте данный rc.conf_${jname} в каталог ${workdir}/jails-rcconf/ - после этого, по команде
+<pre>
+   % cbsd jls
+</pre>
+      
+Jail будет выводится в списке в статусе Unregister. По команде 
+<pre>
+% cbsd jregister jname=$jname
+</pre>
+
+вы вернете клетку в общий пул и рабочее состояние.
+
+
 </body>
 </html>
