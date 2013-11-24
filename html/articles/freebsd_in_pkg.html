@@ -26,7 +26,7 @@
 ведутся <a href="http://www.freebsd.org/doc/en/books/porters-handbook/makefile-options.html"><i>KNOBS</i></a>-ы - определенные переменные, специфичные для того или иного приложения. 
 <br><br>С помощью них собирают кастомайженные базы через <a href="http://www.freebsd.org/cgi/man.cgi?query=src.conf&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html">src.conf</a>,
 остается решить вопрос построения репозитория для вашей минимальной базы и разделенных сущностей, в чем может помочь <b>pkgng</b>.
-Благодаря гибкости FreeBSD и паре часов написания <b>sh</b>-скриптика ( сырцы тут: <a href="https://github.com/olevole/base2pkg/">base2pkg</a> ) - и одна из самых страшнейших проблем FreeBSD, 
+Благодаря гибкости FreeBSD c парой строчек <b>sh</b>-сценария ( сырцы тут: <a href="https://github.com/olevole/base2pkg/">base2pkg</a> ) - и одна из самых страшнейших проблем FreeBSD, 
 которой десятилетиями пугают молодежь, становится решаема.
 <br><br>
 Всю работу по автоматическому построению списка файлов, соответствующих тому или иному KNOBs и построению файлов MANIFEST, необходимые для создания <b>pkg</b>, 
