@@ -22,12 +22,12 @@
 когда одной командой можно поставить все необходимое без лишнего хлама.
 <br>
 <br>
-Между тем не многие из противников "толстой базы" знают, что с крайне бородадых времен разработчиками FreeBSD 
-ведутся <a href="http://www.freebsd.org/doc/en/books/porters-handbook/makefile-options.html"><i>KNOBS</i></a>-ы - определенные переменные, специфичные для того или иного приложения. 
-<br><br>С помощью них собирают кастомайженные базы через <a href="http://www.freebsd.org/cgi/man.cgi?query=src.conf&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html">src.conf</a>,
-остается решить вопрос построения репозитория для вашей минимальной базы и разделенных сущностей, в чем может помочь <b>pkgng</b>.
-Благодаря гибкости FreeBSD c парой строчек <b>sh</b>-сценария ( сырцы тут: <a href="https://github.com/olevole/base2pkg/">base2pkg</a> ) - и одна из самых страшнейших проблем FreeBSD, 
-которой десятилетиями пугают молодежь, становится решаема.
+Между тем не многие из противников "толстой базы" FreeBSD знают, что с крайне бородадых времен разработчиками ОС ведутся
+<a href="http://www.freebsd.org/doc/en/books/porters-handbook/makefile-options.html"><i>KNOBS</i></a>-ы - определенные переменные, специфичные для того или иного приложения. 
+<br><br>С помощью них, например, собирают кастомайженные базы через <a href="http://www.freebsd.org/cgi/man.cgi?query=src.conf&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html">src.conf</a>.
+Остается лишь решить вопрос построения репозитория в автоматическом режиме и его дистрибьюция, чем может пригодится <b>pkgng</b>.
+Благодаря гибкости FreeBSD, парой строчек <b>sh</b>-сценария ( сырцы тут: <a href="https://github.com/olevole/base2pkg/">base2pkg</a> ) решается один из самых наистрашнейших минусов FreeBSD, 
+которой десятилетиями пугают молодежь.
 <br><br>
 Всю работу по автоматическому построению списка файлов, соответствующих тому или иному KNOBs и построению файлов MANIFEST, необходимые для создания <b>pkg</b>, 
 выполняет скрипт <a href="https://github.com/olevole/base2pkg/blob/master/makepkg">makepkg</a>
