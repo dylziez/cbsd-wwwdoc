@@ -28,11 +28,6 @@ After image downloading please set correct name and ip address of the jail and r
 <br><br>
 <img src="/html/img/redmine1.png"></img>
 <br>
-<p>At the end of redmine initialization you will be asked which language you prefer by default:
-<pre>
-Select language: ar, az,  ...  zh-TW [en]
-</pre>
-Just hit 'Enter' for English or choose correct lang
 <br><br>
 Now Redmine ready to use. Do not forget to set <i>astart=1</i> in <b>cbsd jconfig jname=redmine</b> if you want for starting jail automatically.
 <br><br>By the starting jail via
@@ -44,5 +39,10 @@ a clean Redmine installation in the jail will be available for accessing via <b>
 <br><br>
 <!--# include file="/html/changeroot_en.html" -->
 <br><br>
+For non-interactive and automatic deploying (for example you create hosting with lots of RM installation for customer) you can use: 
+<pre>
+   % cbsd jconfig jname=redmine redmineinstall rootpw= rmpw= fqdn= redmine_lang=
+</pre>
+
 </BODY>
 </HTML>
