@@ -21,20 +21,28 @@ Be careful to make sure you get the target (of=) correct.
 <br>
 At the moment, the generation of <b>cbsd</b> images is disabled. To install from source, use <a href="installing_cbsd_en.html">these instructions</a>.
 <br>If you still want to download something certainly ;-), download FreeBSD LiveCD of rescue jail:  <a href="rescuebsd_en.html">Rescuecbsd LiveCD</a>.
-<br>
-<FONT face="verdana,arial,helvetica" size="-1">pkg repository url used to build jail (for <b>/usr/local/etc/pkg.conf</b>):</font>
+<br><br>
+If you want use <b>pkg</b> repository from which jails was collected, create file <b>/usr/local/etc/pkg/repos/freecbsd.conf</b> with such content,  substituting as <b>url</b>
+one of the following links:
+<pre>
+  freecbsd: {
+    url: "URL_HERE",
+    mirror_type: "srv",
+    enabled: yes
+  }
+</pre>
+
+where <b>URL_HERE</b>:
 <br><br>
 <table>
 <tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD 9.2</b></td></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.2/xorg</td><td><i> # (default version, NVIDIA GL)</i></td></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.2/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.2/nox</td><td><i> # (WITHOUT_X11=yes, php55, MariaDB)</i></br></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/9.2/nox11</td><td><i> # (WITHOUT_X11=yes)</i></br></tr>
+<tr><td>pkg+http://dl.bsdstore.ru/freebsd/amd64/9.2/xorg</td><td><i> # (default version, NVIDIA GL)</i></td></tr>
+<tr><td>pkg+http://dl.bsdstore.ru/freebsd/amd64/9.2/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
+<tr><td>pkg+http://dl.bsdstore.ru/freebsd/amd64/9.2/nox</td><td><i> # (WITHOUT_X11=yes, php55, MariaDB)</i></br></tr>
 <tr><td colspan="3" bgcolor="#00FF00"><b>FreeBSD CURRENT aka 10.0</b></td></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/xorg</td><td><i> # (default version, NVIDIA GL)</i></td></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/nox</td><td><i> # (WITHOUT_X11=yes, php55, MariaDB)</i></br></tr>
-<tr><td><b>PACKAGESITE:</b></td><td>http://dl.bsdstore.ru/freebsd/amd64/10.0/nox11</td><td><i> # (WITHOUT_X11=yes)</i></br></tr>
+<tr><td>pkg+http://dl.bsdstore.ru/freebsd/amd64/10.0/xorg</td><td><i> # (default version, NVIDIA GL)</i></td></tr>
+<tr><td>pkg+http://dl.bsdstore.ru/freebsd/amd64/10.0/xorgkms</td><td><i> # (Xorg with KMS)</i></td></tr>
+<tr><td>pkg+http://dl.bsdstore.ru/freebsd/amd64/10.0/nox</td><td><i> # (WITHOUT_X11=yes, php55, MariaDB)</i></br></tr>
 </table>
 <br>
 Note: at present building for images is made only for architecture x86-64 to the absence reason in my farm of others.
