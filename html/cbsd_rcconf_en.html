@@ -310,22 +310,23 @@ A similar behavior exec_prestop, except that the command is executed in the mast
 <pre>
 cpuset="0";
 </pre>
-Привязать jail и его процессы к конкретным ядрам CPU. Значение 0 (по-умолчанию) означает, что привязок к ядрам нет и процессы будут занимать все доступные ядра.
-Значение отличное от нуля идентифицирует ядро или список ядер, на которых дозволено работать клетке. Запись должна соответствовать форме записи параметра -l cpu-list
-у команды <b>cpuset</b>(1), например:
+Assign jail and its processes to specific cores CPU. 
+A value of 0 (default) means that there is no binding to CPUs and processes will take up all the available cores.
+Nonzero value identifies the kernel or a list of the CPUs allowed to work jail. 
+Entry must match an entry form for <i>-l cpu-list</i> from <a href="http://www.freebsd.org/cgi/man.cgi?query=cpuset&apropos=0&sektion=0&manpath=FreeBSD+9.2-RELEASE&arch=default&format=html"><b>cpuset(1)</b></a> command, for example:
 <pre>
 cpuset="1";
 </pre>
-означает, что процессы будут работать только на ядре 1.
+means that the processes will only run on first core
 <pre>
 cpuset="0-3"
 </pre>
-означает, что процессы будут работать на ядрах 0,1,2,3
+means that the processes will only run on 0,1,2,3 CPUs
 <pre>
 cpuset="0,3"
 </pre>
-означает, что процессы будут работать на ядрах 0 и 3
+means that the process will only run on 0 and 3 CPUs
 <br>
-Данный функционал полезен, например, для профилирования ПО, или если вы хотите ограничить клетку определенными ядрами (или давать каждой клетке по своему ядру).
+This functionality is useful, for example, for profiling software, or if you want to restrict jails by CPUs.
 </body>
 </html>
