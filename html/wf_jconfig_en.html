@@ -63,6 +63,29 @@ If you want to mount into <b>jail2</b> a directory from <b>jail1</b>, jail1 path
 </pre>
 Make the shared directory /usr/local/www between jail1 and jail2, but it will jail2 in read-only mode
 <br>
+<h3>Presentation of ZFS file systems in jail</h3>
+<br>
+If you want to attach separate ZFS filesystems in jail (ie, want to be able to perform in jail zfs mount),
+ZFS dataset must list in <i><b>$workdir/jails-fstab/</b>fstab.$jname.local</i> file with specifying the keyword zfs in FStype field.
+<br>
+For example, if you want to present the file system ZFS: <b>zroot/jail1_webfs</b> for jail jail1 <i><b>$workdir/jails-fstab/</b>fstab.jail1.local</i> must have:
+<pre>
+zroot/jail1_webfs /usr/home/web zfs rw 0 0
+</pre>
+<i>Note:</i> mount point (/usr/home/web in this example) is not important
+<i>Note2:</i> jail must have <i>allow_zfs</i> paramaters set to 1, what can be done via <b>cbsd jconfig jname=$jname</b>
+In fact, it makes cbsd execute commands:
+<pre>
+% zfs set jailed=on $FS
+% zfs jail $jname $FS
+</pre>
+when jail started and
+<pre>
+% zfs set jailed=off $FS
+% zfs unjail $jname $FS
+</pre>
+when stoped.
+
 <h3>Change settings via the jset</h3>
 Another possibility is to change certain parameters of the jail - use the command <b>cbsd jset</b>
 Full list of possible arguments can be accessed through <i>--help</i>:

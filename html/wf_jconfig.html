@@ -60,7 +60,30 @@ tmpfs /tmp tmpfs rw 0 0
 </pre>
 Сделает каталог /usr/local/www между jail1 и jail2 общим, но в jail2 он будет в режиме read-only
 <br>
-
+<h3>Презентация ZFS файловых систем в jail</h3>
+<br>
+Если вы хотите привязать отдельные ZFS файловые системы в jail ( тоесть, хотите иметь возможности внутри jail выполнить zfs mount ), 
+список ZFS необходимо перечислить в <i><b>$workdir/jails-fstab/</b>fstab.$jname.local</i> файле, указав в поле FStype ключевое слово zfs.
+<br>
+Например, если вы хотите презентовать файловую систему ZFS: <b>zroot/jail1_webfs</b> для клетки jail1, запись в <i><b>$workdir/jails-fstab/</b>fstab.jail1.local</i>
+должна выглядеть так:
+<pre>
+zroot/jail1_webfs /usr/home/web zfs rw 0 0
+</pre>
+<i>Примечание:</i> точка монтирования (/usr/home/web в данном примере) роли не играет
+<i>Примечание2:</i> клетка должна иметь параметр <i>allow_zfs</i> установленным в 1, что можно сделать через <b>cbsd jconfig jname=$jname</b>
+Фактически, это заставляет cbsd выполнить команды:
+<pre>
+% zfs set jailed=on $FS
+% zfs jail $jname $FS
+</pre>
+при старте клетки, и 
+<pre>
+% zfs set jailed=off $FS
+% zfs unjail $jname $FS
+</pre>
+при ее остановке.
+<br>
 <h3>Изменение параметров через jset</h3>
 <br>
 Другая возможность изменить определенные параметры клетки - воспользоваться командой <b>cbsd jset</b>
