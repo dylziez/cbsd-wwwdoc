@@ -52,7 +52,7 @@ Secondly, it is useful to know about the file system hierarchy <b>cbsd</b>. Let 
 All working data of <b>cbsd </b> placed in the directory <b>$workdir</b>(e.g.: <i>/usr/jails</i>), it is also the home directory for the user <b>cbsd</b> and you always
 can quickly change dit to it via:
 <pre>
-    % cd ~ cbsd
+    % cd ~cbsd
 </pre>
 The most important data are located in <b>$workdir/jails-data/$jname</b>, as it is directly the root of the file system jails called </b>$jname</b>,
 if jail is created with the flag <b>baserw=1</b>, or contains the data of jail, which are superimposed on the standard <b>$workdir/basejail/$basename</b> in the directory <b>${workdir}/jails</b>
