@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="FreeBSD VIMAGE jals, FreeBSD VNET jails">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<body>
+<!--# include file="/html/currentver.html" -->
+<br>
+<center><FONT face="verdana,arial,helvetica" size="+1">Модификации, которые выполняют скрипты cbsd в FreeBSD</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+В связи с тем что курс, взятый CBSD ориентирован на связь большого количества функционала для предоставлении комплексного решения, система
+для своей работы делает или предлагает сделать ряд специфичных настроек, о чем и будет описываться на данной странице.
+
+<br><br>
+<center><h3>файл <b>/etc/rc.conf</b> и параметр <b>rcshutdown_timeout</b></h3></center>
+
+Данный параметр регулирует время отработки последовательность завершения работы из rc.shutdown файлов - если по истечению этого времени 
+останавливаемый процесс не передал управление, система убьет его. Для серверов, имеющих большое количество клеток, в которых в свою очередь, 
+могут работать длительные по остановке и чувствительные к убийству сервисы (например базы данных), значение по-умолчанию (120) крайне мало.
+В связи с этим, <b>cbsd</b> изменяет его при первой инициализации.
+
+Если вы хотите оставить значение по-умолчанию и пресечь переназначение параметра при <b>cbsd initenv</b>, просто продублируйте параметр значение
+из /etc/defaults/rc.conf: <b>cbsd</b> не будет менять параметр если в /etc/rc.conf он уже имеется.
+
+<br>
+<center><h3>файл <b>/etc/rc.conf</b>, порт sshd по-умолчанию и параметр sshd_flags</b></h3></center>
+
+Также как в случае с <b>rcshutdown_timeout</b> в <i>/etc/rc.conf</i>, при отстутствии в <i>/etc/rc.conf</i> параметра <b>sshd_flags</b>,
+cbsd initenv предложит вам изменить порт (22) по-умолчанию для демона <b>sshd</b> на 22222 порт, выполнив это через установку записи:
+
+<pre>
+  sshd_flags="-oPermitRootLogin=without-password -oPasswordAuthentication=yes -oUseDNS=no -p22222"
+</pre>
+
+Будьте крайне внимательны к этому изменению. Если вы хотите оставить стандартные флаги sshd демона, продублируйте запись для sshd_flags из
+файла /etc/defaults/rc.conf в /etc/rc.conf и cbsd не будет предлагать изменение.
+<br>
+Параметры "PermitRootLogin=without-password,-oPasswordAuthentication=yes" позволят cbsd выполнятся скриптам на удаленных нодах с полномочиями root авторизуясь
+через RSA/DSA/ECDSA. В настоящее время, работа <ins>базового</ins> функционала cbsd не требуется, но может быть востребована в связке <b>cbsd</b> и системами
+массового управления конфигураций, как например <a href="http://www.ansibleworks.com/"><b>Ansible</b></a> о чем будет описано отдельной статьей.
+<br><br>
+Порт 22222 вместо стандартного 22 предлагается к изменению по некоторым следующим соображениям:
+<br><br>
+<li> до этого порта доходит меньше сканеров sshd для bruteforce. Конечно же, этот аргумент несерьезен ;-) и если вы хотите защитится от перебора, присмотритесь к утилитам <b>security/{bruteblock,denyhosts}</b>;
+<li> Идеология работы <b>cbsd</b> с нодами подразумевает связь серверов между собой через ssh и желательно, чтобы уникальный/выбранный порт sshd (в данном случае 22222), всегда идентифицировал <b>sshd</b> обслуживающим <ins><b>ноду</b></ins>.
+На практике, разные порты sshd на мастер-ноде и клеток полезен тем, что если вы внезапно забыли на какой именно ноде работает ваша клетка <b>jail1024.my.domain</b>, вы всегда можете быть уверенными что соединяясь на хост <b>jail1024.my.domain</b> по
+22222 порту вы непременно попадете на физическую ноду, обслуживающую эту клетку. Второй момент - это клетки с параметром oninterface=0 и имеющие одинаковый с основной системой IP. 
+<br><br>
+Также учитывайте, что при параметре <b>applytpl=1</b> и создании новой клетки, <b>cbsd</b> таким же способом конфигурирует порт клетки на порт 2222 (однако, sshd_enable по-умолчанию остается в NO).
+Данное изменение также продиктовано желанием идентифицировать jail уникальным номером порта. Что, в свою очередь, удобно использовать для систем управления конфигурациями, как например 
+<a href="http://www.ansibleworks.com/"><b>Ansible</b></a>, внося имена клеток в отдельный домен (например jail1024.<b>j</b>.my.domain) и по маске из <b>.j.</b> в зоне система будет применять определенные фильтры и знать корректный порт для 
+установления соединения. Подобный пример из <b>cbsd</b> и <b>Ansible</b> будет описан отдельной статьей.
+<br>
+<center><h3>файл <b>/var/cron/tabs/root</b> и cbsd periodic</h3></center>
+<br>
+<b>cbsd</b> может иметь "внутренние" задачи, требующие периодического выполнения (например снятие трафика, <b>RACCT</b> статистики или отработки <b>sar</b> скрипта). Для этого, она оставляет записи вида:
+<pre>
+* * * * * /usr/bin/lockf -s -t0 $workdir/ftmp/periodic_minutes /usr/sbin/periodic minutes > /dev/null 2>&1
+0 * * * * /usr/bin/lockf -s -t0 $workdir/ftmp/periodic_hourly /usr/sbin/periodic hourly > /dev/null 2>&1
+*/5 * * * * /usr/bin/lockf -s -t0 $workdir/ftmp/cbsdsar /usr/local/bin/cbsd cbsdsar > /dev/null 2>&1
+</pre>
+в пользовательский cron tab для пользователя <b>root</b>. Пользовательский cron tab, вместо системного, используется по соображениям, описанными в <a href="html/articles/upgrade_for_fun.html">Не бойтесь mergemaster</a>.
+Если вы не хотите чтобы подобны вызовы тревожили вашу систему, вызовите редактор cron tab через команду:
+<pre>
+% crontab -e
+</pre>
+и поставьте перед этими строчками '#', символ комментария. В этом случае, <b>cbsd initenv</b> не будет вносить изменения.
+<br>
+<center><h3>файл <b>/boot/loader.conf</b>, pf/ipfw модули и net.inet.ip.fw.default_to_accept</h3></center>
+<br>

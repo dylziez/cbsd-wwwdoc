@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="CBSD Store">
+<META name="Keywords" content="FreeBSD VIMAGE jals, FreeBSD VNET jails">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<body>
+<!--# include file="/html/translate_en.html" -->
+<!--# include file="/html/currentver_en.html" -->
+<br>
+<center><FONT face="verdana,arial,helvetica" size="+1">Modification which are carried out by cbsd scripts in FreeBSD</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+Due to the fact that the course taken by CBSD is focused on a large number of functional relationship for the provision 
+of an integrated solution, the system for their work makes or proposes to make a number of specific settings, 
+and what is described on this page.
+
+<br><br>
+<center><h3><b>/etc/rc.conf</b> file and <b>rcshutdown_timeout</b> parameter</h3></center>
+
+This parameter adjusts the time of processing the sequence of shutdown rc.shutdown files - 
+if after this timestop the process does not transfer control system would kill him. 
+For servers having a large number of jails, which in turnmay work to stop the long and sensitive to 
+killing services (eg database), the default value (120) is extremely small. In this regard, 
+<b>cbsd</b> change it at the first initialization.
+
+If you want to keep the default value and stop the redefine parameter when <b>cbsd initenv</b>, 
+simply duplicate the parameter value from /etc/defaults/rc.conf: <b>cbsd</b> will not change the setting if /etc/rc.conf, he already has.
+
+<br>
+<center><h3><b>/etc/rc.conf</b> file, default sshd port and sshd_flags paramete</b></h3></center>
+
+As in the case with <b>rcshutdown_timeout</b> in <i>/etc/rc.conf</i>, 
+in absence of a <i>/etc/rc.conf</i> parameter <b>sshd_flags</b>, 
+<i>cbsd initenv</i> prompts you to change the port (22) default daemon <b>sshd</b> 
+on port 22222 by running it through this setup:
+
+<pre>
+  sshd_flags="-oPermitRootLogin=without-password -oPasswordAuthentication=yes -oUseDNS=no -p22222"
+</pre>
+
+Be extremely careful about this change. 
+If you want to keep the standard flags sshd daemon, duplicate entry for sshd_flags from file /etc/defaults/rc.conf in 
+/etc/rc.conf and cbsd will not offer change.
+<br>
+Options "PermitRootLogin=without-password -oPasswordAuthentication=yes" will allow cbsd 
+execute a script on remote node with root authority authorizing through the RSA/DSA/ECDSA. 
+Currently, work <ins>base</ins> functional cbsd not required, but may be required in conjunction <b>cbsd</b> and mass control configurations system, 
+such as <a href="http://www.ansibleworks.com/"><b>Ansible</b></a> as will be described in a separate article.
+<br><br>
+22222 instead of the default port 22 is proposed to change some the following reasons:
+<br><br>
+<li> to this port comes less scanners for sshd bruteforce. Of course, this argument is not serious ;-) and if you want protection from brute force, just look at utilities <b>security/{bruteblock,denyhosts}</b>;
+<li> Ideology of <b>cbsd</b> with nodes implies a connection between a server via ssh and it is desirable that a unique/selected port sshd (in this case 22222), always identified <b>sshd</b> serving <ins><b>node</b></ins>.
+In practice, different ports sshd on the master node and jail is useful because if you suddenly forget what kind of node on running your jail <b>jail1024.my.domain</b>, 
+you can always be sure that when connecting to the host <b>jail1024.my.domain</b> on the 22222 port you will certainly get to the physical node serving this jail. 
+The second point - that the jail with the parameter <i>oninterface=0</i> and have the same basic system with IP.
+<br><br>
+Also note that, while parameter <b>applytpl=1</b> and the creation of new jail, <b>cbsd</b> in the same way configures port in jail to port 2222 (however, sshd_enable default remains in NO).
+This change is also driven by a desire to identify jail unique port number. That, in turn, are useful for configuration management systems, such as
+<a href="http://www.ansibleworks.com/"><b>Ansible</b></a>, introducing the names of jail in a single domain (eg jail1024.<b>j</b>.my.domain) and use the mask of <b>.j.</b> in the zone 
+system will apply certain filters to know the correct port for establishing a connection. A similar example of <b>cbsd</b> and <b>Ansible</b> will be described in a separate article.
+<br>
+<center><h3><b>/var/cron/tabs/root</b> file and cbsd periodic</h3></center>
+<br>
+<b>cbsd</b> may have "internal" tasks requiring periodic execution (eg: traffic stats, <b>RACCT</b> stats or execute <b>sar</b> script). To do this, it leaves a record of the form:
+<pre>
+* * * * * /usr/bin/lockf -s -t0 $workdir/ftmp/periodic_minutes /usr/sbin/periodic minutes > /dev/null 2>&1
+0 * * * * /usr/bin/lockf -s -t0 $workdir/ftmp/periodic_hourly /usr/sbin/periodic hourly > /dev/null 2>&1
+*/5 * * * * /usr/bin/lockf -s -t0 $workdir/ftmp/cbsdsar /usr/local/bin/cbsd cbsdsar > /dev/null 2>&1
+</pre>
+in user-cron tab for user <b>root</b>. Users cron tab, instead of the system used for the reasons described 
+in <a href="html/articles/upgrade_for_fun.html"> Do not be afraid mergemaster</a>. If you do not want to disturb these calls in your system, just open the editor via cron tab command:
+<pre>
+% crontab -e
+</pre>
+and put before these lines the '#' comment character. In this case, <b>cbsd initenv</b> will not make changes.
+<br>
+<center><h3><b>/boot/loader.conf</b> file, pf/ipfw modules and net.inet.ip.fw.default_to_accept</h3></center>
+<br>
