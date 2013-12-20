@@ -82,8 +82,11 @@ It is recommended to use a name, similar full hostname (including domain). This 
 <li><strong>Please fill nodeip</strong> - Working and static IP address of a node. It shouldn't be alias and it is desirable to register this IP on the separately interface
 (free from any other except a management-traffic). For example: 192.168.1.2
 <li><strong>Please fill nodeloc</strong> - Information strings. It will be used in the future in the WEB interface. Here it is possible to leave information on a geographical place of this nodes. For example: USA, Dallas DC.
-<li><strong>Please fill jnameserver</strong> - The DNS list the server, established in <i>/etc/resolv.conf</i> for created jails. If them a more than one - a comma separated.
-It is recommended to enable on master-node local named for a caching of requests. In order that jails could use it, it is necessary in <i>/etc/namedb/named.conf</i> replace string
+<li><strong>Please fill jnameserver</strong> - List of IP DNS servers for installing in <i>/etc/resolv.conf</i> of created and jails which starts.
+If several addresses, they must be specified separated by commas. Recommended to setup the master-node server for caching DNS queries.
+<br><br>For FreeBSD < 10.0 you prompted for <b>named</b> by default, for FreeBSD 10.0+ - it is <b>unbound</b>.
+<br>
+In order for jail to use <b>named</b>, it is necessary to <i>/etc/namedb/named.conf</i> change the line
 <pre>
 listen-on       { 127.0.0.1; };
 </pre>
@@ -91,14 +94,8 @@ to
 <pre>
 listen-on       { any; };
 </pre>
-and, if the IP address of a node 192.168.1.2 to specify in this field: 192.168.1.2,8.8.8.8 (having registered primary DNS - local, the second - public DNS from Google).
-For automatic start of named, in <i>/etc/rc.conf</i> you must have:
-<pre>
-named_enable="YES"
-</pre>
-then execute: 
-<pre>service named start
-</pre>
+This setting cbsd done automatically when the corresponding response to the question about configuring named.
+<br>Accordingly, when using a caching DNS, if the IP address of the node such as 192.168.1.2, use this address in jnameserver at the first.
 <li><strong>Please fill nodeippool</strong> - The list of subnets in which it is permitted to be started the jails. If networks more then one - use spacel as delimer. For example: 10.0.0.0/24 192.168.1.128/29
 <li><strong>Please fill natip</strong> - Here it is necessary to enter the IP address which will represent itself as NAT for private addresses. Usually it is IP of your node. For example: 192.168.1.2
 <li><strong>Please fill fbsdrepo</strong> - Whether to use an official repository of FreeBSD for base/templates. The answer 1 or 2 is expected. If on officidal FreeBSD servers  base it is not revealed - cbsd repository is used. 
