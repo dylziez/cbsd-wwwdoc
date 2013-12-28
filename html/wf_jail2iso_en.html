@@ -4,7 +4,15 @@
 </pre>
 <b>Description</b>:
 <br><br>
-The <b>jail2iso</b> script allows to create a bootable image for CD/DVD/Memstick from the specified jail. This script can be applied to creation of custom LiveCD.
+The <b>jail2iso</b> script allows to create a bootable image for CD/DVD/Memstick from the specified jail.
+Despite the fact that functional <b>jail2iso</b> is not used in <b>cbsd</b> operation or jails, this script 
+can be very useful for easy and comfortable build customized LiveCD, content which you can install, 
+configure and test in jail. For example, this functionality is useful for:
+<br><br>
+<li> Creating rescue-system with necessary tools
+<li> Building your own FreeBSD distribution
+<li> Creating images for diskless servers/stations (eg booted from PXE, MicroSD, Flash, CD/DVD, etc.) and have mounted home directories or jails/data files 
+from NFS/FibreChannel/iSCSI/InfiniBand.
 <br><br>
 Script job:
 <br><br>
@@ -15,56 +23,73 @@ from / to / usr.
 <li> Mount through tmpfs over RO file system for modification in LiveCD mode.
 <br>
 <br>
-Listing of directory which are necessary for rewriting on RW/tmpfs it is necessary before call <b>jail2iso</b>, stored into file <i>$systemdir/jail/tmpfsdir</i>
-<br>For example, for <b>mc</b> jail it is: <i>/usr/jails/jails-system/mc/tmpfsdir</i> file with, for example, follow content:
+If you need a number of directories reload when loading image in RW via tmpfs, before executing <b>jail2iso</b> you needs to be written to a file 
+<i>$systemdir/jail/tmpfsdir</i> all the path
+<br>For example <b>rescuebsd</b> jail is a file: <i>/usr/jails/jails-system/rescuebsd/tmpfsdir</i> with content:
 <br>
 <pre>
-/etc
 /root
-/var/cache
-/var/tmp
 /var/run
-/var/log
+/var/cache
 /var/db
-/tmp
+/var/spool
+/var/log
 /usr/home
-/root
 /usr/local/etc
 </pre>
 <br>
-This record will be kept in <i>/etc/rc.d/tmpfsdir</i> in image, which mount these directory through tmpfs also will write down in them contents of original content from bootable media.
+These entries are processed <i>/etc/rc.d/tmpfsdir</i>, which will save to the image by <b>jail2iso</b>. 
+All contents of these files, which is on the jail, will be moved to tmpfs filesystem.
 <br>As RW areas are mounted through TMPFS, the quantity of memory available to record will depend on quantity of RAM of servers on which LiveCD is started.
 <br><br>
-<b>Example</b> (fetching from repository Midnight Commander jail and turn it to /tmp/mc.iso):
-<br>
+You may prefer to write your own /boot/loader.conf to created image. 
+To do this, save the file <b>loader.conf</b> in the directory <i>$systemdir/$jname/</i>. 
+Everything you write in this file will be added to loader.conf, generated <b>jail2iso</b>, which has the following mandatory entries:
 <pre>
-% cbsd repo action=get sources=img name=mc
-% cat > /usr/jails/jails-system/mc/tmpfsdir << EOF
-/etc
-/root
-/var/cache
-/var/tmp
-/var/run
-/var/log
-/var/db
-/tmp
-/usr/home
-/root
-/usr/local/etc
-EOF
-
-% cbsd jail2iso media=iso jname=mc destdir=/tmp
-% file -s /tmp/mc.iso
+kern.ipc.shmmni=4096
+kern.ipc.shmseg=4096
+radeonkms_load="YES"
+i915kms_load="YES"
+linux_load="YES"
 </pre>
-If /tmp/mc.iso is present, it can be burned on CD/DVD. For USB Memstick:
 <br>
+You can specify what type of image <b>jail2iso</b> is to create, ISO image with cd9960 for CD/DVD/VMs or Memstick, an image that you can burn to a USB Flash drive.
+<br><b>cbsd jail2iso</b> is not controlled and does not limit the volume of the final result - they are limited only by your destination media:
+<br><br>
+For create ISO image use:
 <pre>
-% cbsd jail2iso media=memstick jname=mc destdir=/tmp
-% file -s /tmp/mc.img
+%  cbsd jail2iso media=iso ..
 </pre>
-If /tmp/mc.img is present, it can be written on USB Storage via:
+For create memstick image use:
+<pre>
+% cbsd jail2iso media=memstick ..
+</pre>
+<br>
+Directory where to save the image specified as an argument <b>destdir</b>.
+<br>
+By default, the image will be have GENERIC kernel from $workdir/basejail/ directory. 
+You can get this kernel via
+<br>
+<pre>% cbsd repo action=get sources=kernel</pre>
+for your version of FreeBSD, or build it yourself through <b>cbsd buildkernel</b>.
+ If the GENERIC kernel is not suitable as an argument <b>name</b> for <b>jail2iso</b> 
+you can specify a different kernel if you have it.
+<br><br>
+In addition, to reduce the size of the final image, jail2iso a series of actions:<br>
+<br>
+<li> removal .a-archive files in lib directories
+<li> removing unnecessary data by file list
+<br>
+<br> By default, this list is located in the $workdir/share/jail2iso-prunelist.
+You can correct them if you needed, or create your own, specifying the path to it as an argument <b>prunelist</b>
+<br><br>
+Example of creating memstick from jail1:
+<br><pre>
+% cbsd jail2iso media=memstic jname=jail destdir=/tmp
+</pre>
+If the file /tmp/jail1.img created, it can be writte to a USB device via the command:
 <pre>
 dd if=/tmp/mc.img of=/dev/da0 bs="10240" conv="sync"
 </pre>
-command, if <b>/dev/da0</b> - it correct USB Flash device.
+, where <b>/dev/da0</b> - is USB Flash storage.
 <br><br><center>

@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-  <META http-equiv="content-type" content="text/html; charset=UTF-8">
-  <META name="Description" content="CBSD Store">
-  <META name="Keywords" content="CBSD, BSDStore">
-  <LINK rel="shortcut icon" href="favicon.ico">
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="jail management">
+<META name="Keywords" content="jail management">
+<LINK rel="shortcut icon" href="favicon.ico">
 
   <title>CBSD - FreeBSD jails management tools</title>
 </HEAD>
@@ -14,7 +14,13 @@
 <font face="verdana, arial, helvetica" size="-1">
 <br><br>
 <b>CBSD</b> is a wrapper from <b>sh</b>-scripts (mainly) round a <a href="http://www.freebsd.org/cgi/man.cgi?query=jail&apropos=0&sektion=0&manpath=FreeBSD+9.1-RELEASE&arch=default&format=html">jail(8)</a> subsystem an operating system 
-<a href="www.freebsd.org">FreeBSD</a> OS. Any new functional in OS at this stage it is not brought - everything that can do <b>cbsd</b> scripts, you can do by command (by commands, tens commands, hundreds of commands) in CLI through the corresponding utilities. 
+<a href="www.freebsd.org">FreeBSD</a> OS aimed at linking the various features of FreeBSD as racct(8), vnet, zfs(8), carp(4), hastd(8) in one instrument giving a more comprehensive solution for building application server using prearranged jail with typical sets of software and require minimal configuration.
+<br><br>
+Due to the simplicity of the basic functionality for creating and removing jails (and I hope it will remain so), 
+at the moment there are many implementations and wrappers over the standard jail(8), 
+allowing people to create and use own options for managing jail FreeBSD, and CBSD is one of these wrapper.
+<br><br>
+Any new functional in OS at this stage it is not brought - everything that can do <b>cbsd</b> scripts, you can do by command (by commands, tens commands, hundreds of commands) in CLI through the corresponding utilities. 
 The project becomes as for relief of own needs on administration of jails and servers, and 'just for fun'.<br>
 <br>
 From the list of own needs it is possible to note the following actions:

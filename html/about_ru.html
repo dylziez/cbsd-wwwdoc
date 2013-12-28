@@ -2,9 +2,8 @@
 <HTML>
 <HEAD>
   <META http-equiv="content-type" content="text/html; charset=UTF-8">
-  <META name="Description" content="CBSD Store">
-  <META name="Keywords" content="CBSD, BSDStore">
-
+<META name="Description" content="jail management">
+<META name="Keywords" content="jail management">
   <LINK rel="shortcut icon" href="favicon.ico">
 
   <title>CBSD - FreeBSD jails management tools</title>
@@ -14,7 +13,12 @@
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br>
 <b>CBSD</b> - это обертка из <b>sh</b>-скриптов (преимущественно) вокруг подсистемы <a href="http://www.freebsd.org/cgi/man.cgi?query=jail&apropos=0&sektion=0&manpath=FreeBSD+9.1-RELEASE&arch=default&format=html">jail(8)</a> операционной системы 
-<a href="http://www.freebsd.org">FreeBSD</a>. Какого-либо нового функционала в ОС на данном этапе не внесено - все, что могут делать скрипты <b>cbsd</b>, можно сделать командой (командами, десятками, сотнями команд) в CLI через соответствующие утилиты. 
+<a href="http://www.freebsd.org">FreeBSD</a>, ориентированного на связывании различных особенностей FreeBSD, таких как racct,vnet, zfs, carp, hastd и тд в один инструмент для более комплексного решения при построении серверов приложений,
+использующее заранее подготовленные jail образы с типовым набором ПО и требующие минимальной настройки. 
+<br><br>Благодаря простоте базового функционала по созданию и удалению клеток (и я надеюсь, он таким и останется), в данный момент существует множество реализаций и надстроек над стандартным jail(8), позволяя людям создавать и использовать
+собственное варианты по управлению клетками FreeBSD, и CBSD является одним из таких надстроек.
+<br><br>
+Какого-либо нового функционала в ОС на данном этапе не внесено - все, что могут делать скрипты <b>cbsd</b>, можно сделать командой (командами, десятками, сотнями команд) в CLI через соответствующие утилиты. 
 Проект делается как для облегчения собственных нужд по администрированию клеток и серверов, так и 'just for fun'.<br>
 <br>
 Из списка собственных нужд можно отметить следующие действа:

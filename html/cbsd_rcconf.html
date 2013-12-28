@@ -2,11 +2,11 @@
 <HTML>
 <HEAD>
 <META http-equiv="content-type" content="text/html; charset=UTF-8">
-<META name="Description" content="CBSD Store">
-<META name="Keywords" content="CBSD, BSDStore">
 <LINK rel="shortcut icon" href="favicon.ico">
 
 <title>CBSD - FreeBSD jails management tools</title>
+<meta name="keywords" content="jail ip alias, jail zfs, jail interface, jail baserw, jail mount ports, jail auto start, jail vnet, jail vimage, jail resolv.conf, jail cpuset, jail setfib"/>
+<meta name="description" content="jail ip alias, jail zfs, jail interface, jail baserw, jail mount ports, jail auto start, jail vnet, jail vimage, jail resolv.conf, jail cpuset, jail setfib" />
 </HEAD>
 <!--# include file="/html/cbsdmenu_ru.html" -->
 <body>
@@ -16,6 +16,14 @@
 <br><br>
 <body>
 <p>Каждая клетка cbsd имеет свой набор настроек, который используется при старте, останове и работе клеток.
+<br><br>
+Часть из них указывается на этапе создания клетки, остальные вы сможете поменять через команду
+<pre>
+% cbsd jconfig jname=jname
+</pre>
+
+Очень немногие параметры в данный момент можно изменить на-лету.
+<br><br>
 Здесь дана краткая информация стандартных параметров.
 <hr>
 <pre>
@@ -317,5 +325,15 @@ cpuset="0,3"
 означает, что процессы будут работать на ядрах 0 и 3
 <br>
 Данный функционал полезен, например, для профилирования ПО, или если вы хотите ограничить клетку определенными ядрами (или давать каждой клетке по своему ядру).
+<hr>
+<pre>
+setfib="0";
+</pre>
+Привязать jail и его процессы к отдельной таблице маршрутизации. Значение 0 (по-умолчанию) означает, что привязок нет и будет использоваться стандартная таблица маршрутизации.
+Для того, чтобы использовать <b>setfib</b>, в файле /boot/loader.conf вам необходимо установить лимиты таблиц через параметр <b>net.fibs</b>. Например, если вы хотите
+использовать пять отдельных таблиц маршрутизации, в /boot/loader.conf вы должны иметь следующую запись:
+<pre>
+net.fibs="5"
+</pre>
 </body>
 </html>

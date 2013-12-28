@@ -5,7 +5,14 @@
 <b>Описание</b>:
 <br><br>
 Скрипт <b>jail2iso</b> позволяет создать загрузочный образ для CD/DVD/Memstick из указанной клетки.
-Данный скрипт можно применять для построения кастомизированных LiveCD.
+Несмотря на то, что функционал <b>jail2iso</b> не используется в работы <b>cbsd</b> или клеток, этот
+скрипт может быть очень полезен для легкого и комфортного построения кастомизированных LiveCD, содержимое
+которых вы можете устанавливать, настраивать и проверять в клетке. Например, этот функционал удобен для:
+<br><br>
+<li> Создание Rescue-систем с необходимыми инструментами на борту
+<li> Построение собственного дистрибутива FreeBSD
+<li> Создание образов для бездисковых серверов/станций (например загружаемые с PXE, MicroSD, Flash, CD/DVD, и тд) и монтирующие домашние
+каталоги или клетки/файлы с данными по NFS/FibreChannel/iSCSI/InfiniBand.
 <br><br>
 Схема работы скрипта:
 <br><br>
@@ -16,55 +23,80 @@
 <li> Монтирование tmpfs поверх RO файловой системы для возможности производить модификации.
 <br>
 <br>
-Перечислить список каталогов, которые необходимо перезаписать на RW/tmpfs необходимо до вызова утилиты <b>jail2iso</b>, сохравнив в файл <i>$systemdir/jail/tmpfsdir</i>
-<br>Например для клетки <b>mc</b> это файл: <i>/usr/jails/jails-system/mc/tmpfsdir</i> содержащий, например:
+Если вам необходимо ряд директорий при загрузке образа перезагрузить в RW через tmpfs, до вызова утилиты <b>jail2iso</b> необходимо прописать в файл <i>$systemdir/jail/tmpfsdir</i> все пути.
+<br>Например для <b>rescuebsd</b> клетки это файл: <i>/usr/jails/jails-system/rescuebsd/tmpfsdir</i> содержащий:
 <br>
 <pre>
-/etc
 /root
-/var/cache
-/var/tmp
 /var/run
-/var/log
+/var/cache
 /var/db
-/tmp
+/var/spool
+/var/log
 /usr/home
-/root
 /usr/local/etc
 </pre>
 <br>
-Данная запись будет сохранена в <i>/etc/rc.d/tmpfsdir</i> образа, который подмонтирует данные каталоги через tmpfs и запишет в них содержимое оригинальных каталогов с bootable media.
+Данные записи будут обработаны <i>/etc/rc.d/tmpfsdir</i>, который сохранит на образ <b>jail2iso</b>. Все содержимое в этих файлах, которое находится на jail, будет перемещено на tmpfs файловую систему.
 <br>Поскольку RW области монтируются через TMPFS, количество доступной для записи памяти будет зависеть от количества оперативной памяти, на котором запускается LiveCD.
 <br><br>
-<b>Пример</b> (получаем из репозитория клетку mc, превращаем ее в LiveCD образ в каталоге /tmp:)
-<br>
+Вы можете предпочесть написать собственный /boot/loader.conf на создаваемом образе. Для этого, сохранив файл <b>loader.conf</b> в каталог <i>$systemdir/$jname/</i>. Все, что вы напишете в этом файле, добавиться к файлу loader.conf,
+генерируемого <b>jail2iso</b>, которая имеет следующие обязательные записи:
 <pre>
-% cbsd repo action=get sources=img name=mc
-% cat > /usr/jails/jails-system/mc/tmpfsdir << EOF
-/etc
-/root
-/var/cache
-/var/tmp
-/var/run
-/var/log
-/var/db
-/tmp
-/usr/home
-/root
-/usr/local/etc
-EOF
+geom_uzip_load="YES"
+tmpfs_load="YES"
+nullfs_load="YES"
 
-% cbsd jail2iso media=iso jname=mc destdir=/tmp
-% file -s /tmp/mc.iso
+mfs_load="YES"
+mfs_type="mfs_root"
+mfs_name="/mfsroot"
+vfs.root.mountfrom="ufs:/dev/md0"
+
+net.inet.ip.fw.default_to_accept=1
 </pre>
-Если /tmp/mc.iso записался, его можно прожечь на CD/DVD. Для получения USB Memstick:
-<br>
+Например, для клетки <b>xrescuebsd</b>, которая загружается в режиме KMS на ядре с newcons, имеется файл  <i>/usr/jails/jails-system/xrescuebsd/loader.conf</i> со следующим содержимым:
 <pre>
-% cbsd jail2iso media=memstick jname=mc destdir=/tmp
-% file -s /tmp/mc.img
+kern.ipc.shmmni=4096
+kern.ipc.shmseg=4096
+radeonkms_load="YES"
+i915kms_load="YES"
+linux_load="YES"
 </pre>
+<br>
+Вы можете указать, какой тип образа <b>jail2iso</b> должна создать, ISO образ с cd9960 для CD/DVD/Виртуальных машин или Memstick, образ, который вы сможете записать на USB Flash носитель.
+<br>
+<b>cbsd jail2iso</b> не контроллирует и не лимитирует объемы конечного результата - они ограничены лишь вашим носителем, для которого создается образ.
+Для создания ISO образа:
+<pre>
+cbsd jail2iso media=iso ..
+</pre>
+Для создания memstick:
+<pre>
+% cbsd jail2iso media=memstick ..
+</pre>
+<br>
+Каталог, куда будет сохранен образ указывается через аргумент <b>destdir</b>.
+<br><br>
+По-умолчанию, на образ будет сохранено GENERIC ядро из каталога $workdir/basejail/. Его можно получить по команде:
+<pre>
+cbsd repo action=get sources=kernel
+</pre>
+для вашей версии FreeBSD, или собрать самостоятельно через <b>cbsd buildkernel</b>.
+Если ядро GENERIC не подходит, через аргумент <b>name</b> для <b>jail2iso</b> вы можете указать другое ядро, если оно у вас есть.
+<br><br>
+Кроме этого, для уменьшения размера финального образа, jail2iso выполняет ряд действий:
+<br><br>
+<li> удаление .a-архивных файлов в каталогах библиотек
+<li> удаление необязательных данных по файлу-списку.
+<br><br>По-умолчанию, данный список расположен в $workdir/share/jail2iso-prunelist.
+Вы можете его откорректировать по собственному усмотрению или создать свой, указав путь к нему через аргумент <b>prunelist</b>
 
-Если /tmp/mc.img есть, его можно записать на USB носитель через команду:
+<br><br>
+Пример создания memstick из клетки jail1:
+<br><pre>
+% cbsd jail2iso media=memstic jname=jail destdir=/tmp
+</pre>
+Если файл /tmp/jail1.img создался, его можно записать на USB носитель через команду:
 <pre>
 dd if=/tmp/mc.img of=/dev/da0 bs="10240" conv="sync"
 </pre>

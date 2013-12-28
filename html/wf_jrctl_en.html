@@ -5,18 +5,17 @@
 </pre>
 
 <b>Description</b>:
-<br><br>
-To view the statistics, set and unset limits on the jail, use the command cbsd jrctl.
-<br>This command with the keys:
+If your kernel has support RACCT/RCTL, you can set limits on the jail and watch the current statistics for jail resources.
+<br>
+To do this, there is a command <b>cbsd jrctl</b>, which arguments
 <pre>
 % cbsd jrctl mode=apply  ...
 </pre>
+and
 <pre>
 % cbsd jrctl mode=unset  ...
 </pre>
-
 automatically called for the install or removal of limits when working <b>jstart</b> or <b>jstop</b> respectively.
-
 By command
 <pre>
 % cbsd jrctl mode=show
@@ -24,7 +23,11 @@ By command
 
 you can see current statistics on the jail resources consumed, which can be used to generate reports and graphs
 for loading jail, as well as the cbsd daemon used to generate recommendations on the need to add new resources and for overload warnings.
-
+<br><br>
+You can edit the limits through
+<pre>% cbsd jrctl-tui jname=jname</pre>
+or, if you build a hosting and want to create limits on non-interactively, you can generate a file $workdir/$jname/jail.limits
+<br><br>
 By jrctl you can set the following limits jail:
 
 a) All you can do a framework FreeBSD <a href="http://man.freebsd.org/rctl/8">rctl(8)</a>:

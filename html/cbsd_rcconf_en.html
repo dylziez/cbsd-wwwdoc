@@ -2,11 +2,10 @@
 <HTML>
 <HEAD>
 <META http-equiv="content-type" content="text/html; charset=UTF-8">
-<META name="Description" content="CBSD Store">
-<META name="Keywords" content="CBSD, BSDStore">
 <LINK rel="shortcut icon" href="favicon.ico">
-
 <title>CBSD - FreeBSD jails management tools</title>
+<meta name="keywords" content="jail ip alias, jail zfs, jail interface, jail baserw, jail mount ports, jail auto start, jail vnet, jail vimage, jail resolv.conf, jail cpuset, jail setfib"/>
+<meta name="description" content="jail ip alias, jail zfs, jail interface, jail baserw, jail mount ports, jail auto start, jail vnet, jail vimage, jail resolv.conf, jail cpuset, jail setfib" />
 </HEAD>
 <!--# include file="/html/cbsdmenu_en.html" -->
 <!--# include file="/html/translate_en.html" -->
@@ -17,6 +16,11 @@
 <br><br>
 <body>
 <p>Each jail of cbsd has its own settings which is used for starting and stopping the jail.
+<br><br>
+Some of them are specified during the creation of jail, the rest you can change via the command
+<pre>% cbsd jconfig jname=jname</pre>
+Only few options at this point can be changed on-the-fly.
+<br><br>
 This page contains a summary of the default settings and description.
 <hr>
 <pre>
@@ -328,5 +332,16 @@ cpuset="0,3"
 means that the process will only run on 0 and 3 CPUs
 <br>
 This functionality is useful, for example, for profiling software, or if you want to restrict jails by CPUs.
+<hr>
+<pre>
+setfib="0";
+</pre>
+Assign jail and its processes to separate routing table. A value of 0 (default) means that there is no binding and will be use default routing table.
+To use <b>setfib</b>, in the file /boot/loader.conf you need to set limits number of tables by parameter <b>net.fibs</b>. 
+For example, if you want use five separate routing tables, in /boot/loader.conf you must have the following entry:
+<pre>
+net.fibs="5"
+</pre>
+
 </body>
 </html>
