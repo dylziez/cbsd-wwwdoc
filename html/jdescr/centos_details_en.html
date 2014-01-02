@@ -9,11 +9,20 @@
 </HEAD>
 <!--# include file="/html/cbsdmenu_en.html" -->
 <!--# include file="/html/translate_en.html" -->
-<FONT face="verdana,arial,helvetica" size="+1">KFreeBSD Jail</font>
+<FONT face="verdana,arial,helvetica" size="+1">CentOS Jail</font>
 <FONT face="verdana,arial,helvetica" size="-1">
 <br><br> Linux CentOS 6.2 i386 as FreeBSD jail images
 <br><br>
-This is FreeBSD 10.0 version.
+<br><br>For installing CentOS cbsd jail just follow this steps (for FreeBSD 10 and above):
+<pre>
+  % cbsd repo action=get sources=img name=centos
+</pre>
+or
+<pre>
+  % cbsd repo action=get sources=img name=centos ver=10.0
+</pre>
+If you hosted on another ( non 10.0 ) FreeBSD version.
+<br>
 Follow settings must be set before starting:
 <pre>
 % sysrc linux_enable=YES
