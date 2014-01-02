@@ -3,7 +3,7 @@
 <HEAD>
   <META http-equiv="content-type" content="text/html; charset=UTF-8">
   <META name="Description" content="CBSD Store">
-  <META name="Keywords" content="CBSD, BSDStore">
+  <META name="Keywords" content="FreeBSD gitlab, gitlab jail, FreeBSD Gitlab jail">
   <LINK rel="shortcut icon" href="favicon.ico">
   <title>CBSD - FreeBSD jails management tools</title>
 </HEAD>
@@ -11,19 +11,43 @@
 <!--# include file="/html/translate_en.html" -->
 <FONT face="verdana,arial,helvetica" size="+1">Gitlab jail</font>
 <FONT face="verdana,arial,helvetica" size="-1">
-<br><br>To install gitlab cbsd jail execute the following commands:
+<br><br>For installing Gitlab cbsd jail just follow this steps (for FreeBSD 10 and above):
 <pre>
-% cbsd repo action=get sources=img name=gitlab
+  % cbsd repo action=get sources=img name=gitlab
 </pre>
-After downloading images and set correct ip address of jail, run install script who will ask you for a password for root user in MySQL, password of gitlab user in MySQL and the name of the resource will be available via http://FQDN:
+or
 <pre>
-% cbsd jconfig jname=gitlab gitlabinstall
+  % cbsd repo action=get sources=img name=gitlab ver=10.0
 </pre>
-<p>If all goes well, when you start the jail:
+If you hosted on another ( non 10.0 ) FreeBSD version.
+<br>
+After image downloading please set correct name and ip address of the jail and run a <b>install script</b> that asks you for FQDN of WEB server and gitlab:
+<pre>
+  % cbsd jconfig jname=gitlab gitlabinstall
+</pre>
+After pressing <b>Install</b>, you get an standart GitLab init-script question:
+<pre>
+<i>Do you want to continue (yes/no)?</i>
+</pre>
+Type 'yes' for begin initialization.
+<br><br>
+<img src="/html/img/gitlab2.png"></img>
+<br>
+<br><br>
+Now Gitlab ready to use. Do not forget to set <i>astart=1</i> in <b>cbsd jconfig jname=gitlab</b> if you want for starting jail automatically.
+<br><br>By the starting jail via
 <pre>
 % cbsd jstart gitlab
 </pre>
-your node automatically get a clean Gitlab installation in the jail which is available for configuring via http://FQDN with Gitlab default login and password: admin
+a clean GitLab installation in the jail will be available for accessing via <b>http://FQDN</b> with
+<br>default login: <b>admin@local.host</b>  and
+<br>default password: <b>5iveL!fe</b>
+<br><br>
+<img src="/html/img/gitlab1.png"></img>
 <br>
+<br><br>
+<!--# include file="/html/changeroot_en.html" -->
+<br><br>
+
 </BODY>
 </HTML>
