@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="freebsd arm jailm freebsd mips jail, arm packages, mips packages">
+<META name="Keywords" content="freebsd arm jailm freebsd mips jail, arm packages, mips packages">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_ru.html" -->
+<body>
+<center><FONT face="verdana,arial,helvetica" size="+1">cbsd и Qemu User mode</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<center><p style="color:RED">Внимание! Данные страницы описывают cbsd версии <b>10.0.2</b></p></center>
+<br>
+Имея установленный в мастер-ноде QEMU, собранный с дополнительными таргетами <b>user mode</b>  (\*-user) ( <a href="https://wiki.freebsd.org/QemuUserModeHowTo">https://wiki.freebsd.org/QemuUserModeHowTo</a> ), вы можете создавать клетки
+с альтернативной архитектурой, отличной от архитектуры мастер хоста. При этом, эмуляция будет достигаться через эмулятор Qemu, работающий в прозрачном режиме - если бинарный файл имеет отличную от родной архитектуру, он может выполнен
+в этой системе без необходимости устанавливать целостную виртуальную машину Qemu.
+<br><br>
+Для того, чтобы <b>cbsd</b> могла создавать такие клетки, выполняемый бинарный файл Qemu, обеспечивающий ту или иную архитектуру в <b>usermode</b>,
+должнен быть собран статически, поскольку этот файл будет помещен внутри клетки.
+<br><br>
+Зачем это вообще может быть полезно?
+<br><br>
+В первую очередь, это достаточно простой способ проверить работоспособность бинарной FreeBSD программы определенной архитектуры в родном окружении, при этом вам
+не потребуется искать bootable-дистрибутив и устанавливать FreeBSD нужной архитектуры на отдельный носитель с нуля.
+<br><br>
+Во-вторых, многие владельцы ARM-based устройств страдают от отсутствия репозитория <b>pkg</b> для ARM архитектур, а собирать
+пакеты непосредственно на крайне ограниченных по мощностям ресурсах самих Embedded ARM-based устройств - мягко скажем, довольно грустная операция.
+<br><br>
+ARM-based jail, запущенный на мощной x86-64 системе позволит вам собрать необходимые пакеты, которые вы сможете уже проинсталлировать на Embedded
+устройстве через стандартный <b>pkg</b> в бинарном виде.
+<br>По результатам тестирования, потеря скорости в работе под QEMU эмулятором колеблется
+от 3% до 25% что, например, в сравнении с мощностями таких устройств как <b>RPi-B</b>, современный x86-десктоп в любом случае значительно быстрее.
+<br><br>
+В данный момент протестирована работа клеток на <b>armv6</b> архитектуре и <b>mips64</b>
+<br><br>
+<img src="/html/img/cbsd_with_qemu.png"></img>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<META name="Description" content="freebsd arm jailm freebsd mips jail, arm packages, mips packages">
+<META name="Keywords" content="freebsd arm jailm freebsd mips jail, arm packages, mips packages">
+<LINK rel="shortcut icon" href="favicon.ico">
+
+<title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<body>
+<!--# include file="/html/translate_en.html" -->
+<center><FONT face="verdana,arial,helvetica" size="+1">cbsd and Qemu User mode</font></center>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>
+<body>
+<center><p style="color:RED">Attention! Current pages describe cbsd version <b>10.0.2</b></p></center>
+<br>
+Having installed QEMU in the master node, builded with additional targets <b>user mode</b>  (\*-user) ( <a href="https://wiki.freebsd.org/QemuUserModeHowTo">https://wiki.freebsd.org/QemuUserModeHowTo</a> ), you can create jails
+with alternative architectures other than the master host. At the same time, will be achieved through emulation emulator Qemu, it is completely transparent - if the binary has a non-native architecture, it can perform
+in this system without having to install a complete Qemu virtual machine.
+<br><br>
+To <b>cbsd</b> could create such jail, binary of Qemu, providing this architecture in <b>usermode </b>,
+must be built statically, because the file will be placed inside the jail.
+<br><br>
+Why it can be useful at all?
+<br><br>
+First of all, it's a fairly simple way to test the binary FreeBSD specific software architecture in the native environment, while you
+do not need to search for bootable distribution and install FreeBSD desired architecture on a separate drive from scratch.
+<br><br>
+Secondly, many owners of ARM-based devices suffer from a lack repository <b>pkg</b> for ARM architectures, and building of
+the packages directly on very limited resources for capacity themselves Embedded ARM-based devices - to put it mildly, quite sad operation.
+<br><br>
+ARM-based jail, running on a powerful x86-64 system will allow you to build the necessary packages, you'll have to install Embedded
+device via a standard <b>pkg</b> in binary form.
+<br>According to test results, the loss of speed in the work under QEMU emulator varies
+from 3% to 25%, for example, in comparison with the power of such devices as <b>RPi-B</b>, modern x86-desktop in any case much faster.
+<br><br>
+Currently tested jail work on <b>armv6</b> and <b>mips64</b> architectures.
+<br><br>
+<img src="/html/img/cbsd_with_qemu.png"></img>
+</body>
+</html>
