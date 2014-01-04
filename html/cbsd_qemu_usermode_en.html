@@ -39,6 +39,14 @@ from 3% to 25%, for example, in comparison with the power of such devices as <b>
 <br><br>
 Currently tested jail work on <b>armv6</b> and <b>mips64</b> architectures.
 <br><br>
+<i> Note </i>: because the program will run under qemu, they are have default limit of RAM 128MB, that
+can lead to crashes some fat processes. I have not found in haste as through user mode tools (qemu-arm, qemu-mips64) indicate <b>-m XX </b>, so
+you can simply adjust the desired volume in the file vl.c QEMU, specifying such
+<pre>
+#define DEFAULT_RAM_SIZE 512
+</pre>
+instead of 128.
+<br><br>
 <img src="/html/img/cbsd_with_qemu.png"></img>
 </body>
 </html>
