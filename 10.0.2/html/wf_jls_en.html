@@ -1,0 +1,56 @@
+<b>Commands</b>:<br>
+<pre>
+% cbsd jls
+</pre>
+
+<b>Description</b>:
+<br><br>
+Show the list of jails on a local node or for all added nodes.
+Through argument <b>display</b> you can specify the fields for output data. If <b>display</b> is not specified, the default value is:
+<pre>
+display=jid,jname,ip4_addr,host_hostname,path,status
+</pre>
+All possible options for the sample described in the <i>$workdir/share/jail-arg</i> file
+<br><br>
+<b>JID</b> - Jail ID
+<br>
+<b>JNAME</b> - jail name
+<br>
+<b>IP4_ADDR</b> - list of assigned IP addresses (IPv4,IPv6)
+<br>
+<b>HOST_HOSTNAME</b> - FQDN jail
+<br>
+<b>PATH</b> - root filesystem for jail
+<br><br>
+<b>STATUS</b> - On (running), Off (stoped), Unregister (jail has its rc.conf (old format) but not in the SQL database)
+<br><br>
+Note: Jail in the unregister status may be insert to SQL database via command: <b>cbsd jregister</b>.
+<br>
+Also, they are automatically converted on <i>Upgrading</i> stage of <b>cbsd initenv</b> command
+<br><br>
+In a case when to the local server are added a key of remote of nodes, it is possible to receive 
+the list of all jails in a farm via
+<pre>
+cbsd jls alljails=1
+</pre>
+or
+<pre>
+cbsd jls alljails=1 shownode=1
+</pre>
+for output with node name where jail are hosted.
+<br>
+In the output from cbsd jls alljails, it is possible to see only active jails (in status On)
+<br><br>
+<b>Example</b>:
+<br>
+<pre>
+% cbsd jls
+</pre>
+<br><center>
+<img src="/html/img/jls1.png"></img>
+<br><br>Conclusion customized data (Attention, dashes fields may mean that version of <b>cbsd</b> 
+on the remote node is older. Respectively, SQL query in its database does not find relevant records)<br><br>
+<img src="/html/img/jls2.png"></img>
+<br><br>
+</center>
+</p>
