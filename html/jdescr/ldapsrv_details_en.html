@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<HEAD>
+  <META http-equiv="content-type" content="text/html; charset=UTF-8">
+  <META name="Description" content="CBSD Store">
+  <META name="Keywords" content="FreeBSD ldap server, ldap jail">
+  <LINK rel="shortcut icon" href="favicon.ico">
+  <title>CBSD - FreeBSD jails management tools</title>
+</HEAD>
+<!--# include file="/html/cbsdmenu_en.html" -->
+<!--# include file="/html/translate_en.html" -->
+<FONT face="verdana,arial,helvetica" size="+1">LDAP jail</font>
+<FONT face="verdana,arial,helvetica" size="-1">
+<br><br>For installing LDAP cbsd jail just follow this steps:
+<pre>
+% cbsd repo action=get sources=img name=ldapsrv
+</pre>
+or
+<pre>
+% cbsd repo action=get sources=img name=ldapsrv ver=10.0
+</pre>
+If you hosted on another ( non 10.0 ) FreeBSD version.
+<br>
+After image downloading please set correct name and ip address of the jail and run a <b>install script</b> that asks you for LDAP Common name, FQDN, Suffix and Manager password:
+<pre>
+% cbsd jconfig jname=ldapsrv ldapsrvinstall
+</pre>
+<br><br>
+<img src="/html/img/ldapsrv1.png"></img>
+<br><br>
+Now LDAP server ready to use. Do not forget to set <i>astart=1</i> in <b>cbsd jconfig jname=ldapsrv</b> if you want for starting jail automatically.
+<br><br>By the starting jail via
+<pre>
+% cbsd jstart ldapsrv
+</pre>
+PHPLdapAdmin will be available for accessing via <b>http://FQDN</b>:
+<br>
+<br><br>
+<img src="/html/img/ldapsrv2.png"></img>
+<br>
+<br><br>
+<!--# include file="/html/changeroot_en.html" -->
+<br><br>
+For non-interactive and automatic deploying (for example you create hosting with lots of RM installation for customer) you can use: 
+<pre>
+   % cbsd jconfig jname=ldapsrv ldapsrvinstall cn= cnpw= fqdn= ldapsuffix=
+</pre>
+
+</BODY>
+</HTML>
