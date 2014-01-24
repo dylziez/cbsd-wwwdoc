@@ -13,14 +13,14 @@
 <font face="verdana, arial, helvetica" size="+1">About the project</font>
 <font face="verdana, arial, helvetica" size="-1">
 <br><br>
-<b>CBSD</b> is a wrapper from <b>sh</b>-scripts (mainly) round a <a href="http://www.freebsd.org/cgi/man.cgi?query=jail&apropos=0&sektion=0&manpath=FreeBSD+9.1-RELEASE&arch=default&format=html">jail(8)</a> subsystem an operating system 
-<a href="www.freebsd.org">FreeBSD</a> OS aimed at linking the various features of FreeBSD as racct(8), vnet, zfs(8), carp(4), hastd(8) in one instrument giving a more comprehensive solution for building application server using prearranged jail with typical sets of software and require minimal configuration.
+<b>CBSD</b> is a wrapper comprised of <b>sh</b>-scripts (mainly) around the <a href="http://www.freebsd.org/cgi/man.cgi?query=jail&apropos=0&sektion=0&manpath=FreeBSD+9.1-RELEASE&arch=default&format=html">jail(8)</a> subsystem for an operating system 
+<a href="www.freebsd.org">FreeBSD</a> OS aimed at linking the various features of FreeBSD as racct(8), vnet, zfs(8), carp(4), hastd(8) in one instrument giving a more comprehensive solution for building application servers using prearranged jails with typical sets of software and requiring minimal configuration.
 <br><br>
 Due to the simplicity of the basic functionality for creating and removing jails (and I hope it will remain so), 
 at the moment there are many implementations and wrappers over the standard jail(8), 
-allowing people to create and use own options for managing jail FreeBSD, and CBSD is one of these wrapper.
+allowing people to create and use own options for managing FreeBSD jails, and CBSD is one of these wrappers.
 <br><br>
-Any new functional in OS at this stage it is not brought - everything that can do <b>cbsd</b> scripts, you can do by command (by commands, tens commands, hundreds of commands) in CLI through the corresponding utilities. 
+No new functionality is created - everything that you can do via <b>cbsd</b> scripts, you can do also by command (sometimes up to hundreds of commands) in CLI through the corresponding utilities. 
 The project becomes as for relief of own needs on administration of jails and servers, and 'just for fun'.<br>
 <br>
 From the list of own needs it is possible to note the following actions:
@@ -33,7 +33,7 @@ From the list of own needs it is possible to note the following actions:
 <li> jail resource management (priority (re-nice), RACCT/RCTL, file quotas)
 <li> jail replication on remote node
 <li> distribution of "standard" jails, jail with a certain set of software and services
-<li> The WEB interface and the centralized management of jails farm
+<li> The WEB interface and centralized management of jails
 <li>...
 </font>
 <br><br>
@@ -43,43 +43,41 @@ From the list of own needs it is possible to note the following actions:
 <br>
 <br>The FreeBSD/jail are chosen for the project for several reasons, the most important of which:
 <br><li>absence at overhead on virtualization. Without VIMAGE, the jail code still has very few if/case of designs in a kernel;
-<br><li>following to security recommendation - "divide and conquer". It is desirable each service or group of services to isolate from others;
-<br><li>Systems engineers often have to do a lot of similar installations - AMP, MTA, KDE4. At some instant it wanted to have in advance created and adjusted environment. 
-The jail approach allows to enter the server into an operation instantly, after the FreeBSD installation from scratch - 
+<br><li>following the security recommendation "divide and conquer". It is desirable that each service or group of services is isolated from others;
+<br><li>Systems engineers often have to do a lot of similar installations - AMP, MTA, KDE4. It is possible to create and cutomize an environment in advance and deploy it easily. 
+The jail approach allows a server to be started instantly, after the initial FreeBSD installation from scratch - 
 to deploy the mail server or to start with KDE4, any settings in the master host is not necessary to do - enough
-to download in advance created environment through the network. Possibility to create desktop environment image have the special charm in the form of an absence of need 
-to create the 1024th distribution with differing from the others only by a wallpaper and package sets.
+to download an image/configuration created in advance through the network. It is possible to create desktop environment image without having to manually make 1024 different setups, differing from the others only by a wallpaper and package sets.
 <br><li>Convenience for backup and a fast deploy jails on the fresh installation;
 <br><li>Building your own local repository/library of jails with cistomizable options through <a href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports.html">FreeBSD ports</a>;
 <br><li> at already written plus in a look lack of overhead for virtualization, with the corresponding monitoring, it is possible to assembly the most effective systems.
-For example, there are jails with NoSQL (redis, memcached) - dense work with memory, a jail with MySQL - dense work with CPU, a jail with Web jails (CPU and network),
-jails with Samba (dense work with a network and storage). It is possible to complete each physical note with such jail with which any of the hardware components won't stand idle
-and thus, jails won't fight for resources with other jails
+For example, there are jails with NoSQL (redis, memcached) - heavy memory usage, a jail with MySQL - heavy CPU usage, a jail with Web jails (CPU and network),
+jails with Samba (heavy network and storage/disk usage). It is possible to set up a physical node where each jail uses different resources, any of the hardware won't stay idle and thus, jails won't fight for resources with other jails
 <br><li>..
 <br><br>
-The most part of a code is written on <b>sh</b> for the reason that similar tasks don't demand large mathematical logic - scripts generally repeating a lot of input
+Most of the code is written in <b>sh</b> for the reason that similar tasks don't demand large mathematical logic - scripts generally repeating a lot of input
 command of system administrator in the console, i.e., work with external utilities, such as: zfs, zpool, sudo, pkg, rsync..., respectively, need to apply languages
 programming generally be absent. The part of bottlenecks, and also some functional (logtail, replication, node wathing daemon and ..) are written on C (in plans
 to rewrite bottlenecks on C in the further).
 <br><br>
-cbsd depends on the following  software: <b>rsync</b>,<b>sudo</b>,<b>libssh2</b>,<b>sqlite3</b>
+cbsd depends on the following software: <b>rsync</b>, <b>sudo</b>, <b>libssh2</b>, <b>sqlite3</b>
 <br><br>
 <font size="+1">Features</font>
 <font face="verdana, arial, helvetica" size="-1">
 <br><br>
 <li> a ready repository for kernels and the worlds that takes buildworld/installworld steps not the obligatory.
-<li> When steps of buildworld/installworld are undertaken, src.conf for a world customization is supported
+<li> customizing src.conf for a world at buildworld/installworld time is supported
 <li> base the catalog can place on MD/RAM/TMPFS on a disk that can be useful at a big num of jails with RO mounted base
-<li> support of ZFS of file system, ZFS of quotas, ZFS snapshots
-<li> GUI configurator of jails (DIALOG/WEB)
+<li> supports ZFS quotas, filesystem, snapshots
+<li> GUI configuration of jails (DIALOG/WEB)
 <li> VIMAGE support
-<li> traffic count per jail
+<li> traffic count per jail (bandwidth accounting per jail)
 <li> import/export of jails
 <li> descriptions for jails
 <li> cold migration of a jails between nodes
 <li> management of sequence of start of jail and their priority
 <li> RACCT/RCTL support
-<li> a repository with ready jail template
+<li> a repository with prebuilt jail template
 <li> jail replication
 <li> possibility to create own scenarios for creation of jails/repository
 <li> jail converting into PXE/ISO/Memstick-image
@@ -89,7 +87,7 @@ cbsd depends on the following  software: <b>rsync</b>,<b>sudo</b>,<b>libssh2</b>
 <font size="+1">Goals</font>
 <font face="verdana, arial, helvetica" size="-1">
 <br><br>
-<li> automatic for the peolple)
+<li> automatic for the people
 <li> convenient management, monitoring and control of jails
 <li> application platform with services on demand. 
 <li> images library
